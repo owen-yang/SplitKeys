@@ -12,6 +12,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     let upperKeyboard = UpperKeyboard()
     let lowerKeyboard = LowerKeyboard()
+    let numeralKeyboard = SingleKeyboard()
+    let symbolKeyboard = SingleKeyboard()
     
     var currentKeyboard: Keyboard
     
@@ -33,8 +35,10 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
                 loadKeyboard(upperKeyboard)
             case .lower:
                 loadKeyboard(lowerKeyboard)
-            default:
-                break
+            case .numeral:
+                loadKeyboard(numeralKeyboard)
+            case .symbol:
+                loadKeyboard(symbolKeyboard)
             }
         }
     }
@@ -100,9 +104,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         case .upper:
             mode = .lower
         case .lower:
+            mode = .numeral
+        case .numeral:
+            mode = .symbol
+        case .symbol:
             mode = .upper
-        default:
-            break
         }
     }
     
