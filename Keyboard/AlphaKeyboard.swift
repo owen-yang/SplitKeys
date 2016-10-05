@@ -20,6 +20,8 @@ class AlphaKeyboard: DualKeyboard {
     private var rightLowerIndex = 0
     private var rightUpperIndex = 0
     
+    private var userTyping = false;
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         leftTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
@@ -31,6 +33,7 @@ class AlphaKeyboard: DualKeyboard {
     }
     
     func didTapButton(sender: UITapGestureRecognizer) {
+        userTyping = true
         if sender == leftTapGestureRecognizer {
             if leftLowerIndex == leftUpperIndex {
                 delegate?.didSelect(char: charSet[leftLowerIndex])
@@ -53,6 +56,7 @@ class AlphaKeyboard: DualKeyboard {
     }
     
     private func resetIndexes() {
+        userTyping = false
         leftLowerIndex = 0
         leftUpperIndex = charSet.count / 2 - 1
         rightLowerIndex = min(leftUpperIndex + 1, rightUpperIndex)
@@ -84,6 +88,10 @@ class AlphaKeyboard: DualKeyboard {
         if rightLowerIndex != rightUpperIndex {
             rightLabel.text? += "...\(charSet[rightUpperIndex])"
         }
+    }
+    
+    override func isUserTyping() -> Bool {
+        return userTyping
     }
 }
 

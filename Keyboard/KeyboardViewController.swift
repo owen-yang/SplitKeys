@@ -85,7 +85,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         currentKeyboard = keyboard
         keyboard.resetKeys()
         view.addSubview(keyboard)
-        view.sendSubview(toBack: keyboard) // TODO: remove when gestures are added
         keyboard.translatesAutoresizingMaskIntoConstraints = false
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
@@ -98,7 +97,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didBackspace() {
-        textDocumentProxy.deleteBackward()
+        if currentKeyboard.isUserTyping() {
+            currentKeyboard.resetKeys()
+        } else {
+            textDocumentProxy.deleteBackward()
+        }
     }
     
     func didSpace() {
