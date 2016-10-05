@@ -21,6 +21,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeRightRecognizer = UISwipeGestureRecognizer()
     let swipeLeftRecognizer = UISwipeGestureRecognizer()
     let swipeUpRecognizer = UISwipeGestureRecognizer()
+    let twoSwipeDownRecognizer = UISwipeGestureRecognizer()
     
     enum Mode {
         case upper
@@ -63,6 +64,10 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         
         swipeLeftRecognizer.direction = UISwipeGestureRecognizerDirection.left
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didBackspace))
+        
+        twoSwipeDownRecognizer.numberOfTouchesRequired = 2
+        twoSwipeDownRecognizer.direction = UISwipeGestureRecognizerDirection.down
+        twoSwipeDownRecognizer.addTarget(self, action: #selector(self.didPeriodSpace))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -77,6 +82,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addGestureRecognizer(swipeDownRecognizer)
         view.addGestureRecognizer(swipeLeftRecognizer)
         view.addGestureRecognizer(swipeUpRecognizer)
+        view.addGestureRecognizer(twoSwipeDownRecognizer)
 
     }
     
@@ -105,6 +111,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didSpace() {
+        self.didSelect(char: " ")
+    }
+    
+    func didPeriodSpace() {
+        self.didSelect(char: ".")
         self.didSelect(char: " ")
     }
     
