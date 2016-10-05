@@ -20,8 +20,6 @@ class DualKeyboard: Keyboard {
     let leftTapGestureRecognizer = UITapGestureRecognizer()
     let rightTapGestureRecognizer = UITapGestureRecognizer()
     
-    private let buttonColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -39,7 +37,7 @@ class DualKeyboard: Keyboard {
         
         // leftButton
         addSubview(leftButton)
-        leftButton.backgroundColor = buttonColor
+        leftButton.backgroundColor = defaultButtonColor
         leftButton.translatesAutoresizingMaskIntoConstraints = false
         addConstraint(NSLayoutConstraint(item: leftButton, attribute: .left, relatedBy: .equal, toItem: self, attribute: .left, multiplier: 1, constant: 0))
         addConstraint(NSLayoutConstraint(item: leftButton, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: 0))
@@ -48,7 +46,7 @@ class DualKeyboard: Keyboard {
         
         // rightButton
         addSubview(rightButton)
-        rightButton.backgroundColor = buttonColor
+        rightButton.backgroundColor = defaultButtonColor
         rightButton.translatesAutoresizingMaskIntoConstraints = false
         addConstraint(NSLayoutConstraint(item: rightButton, attribute: .left, relatedBy: .equal, toItem: divider, attribute: .right, multiplier: 1, constant: 0))
         addConstraint(NSLayoutConstraint(item: rightButton, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: 0))
@@ -57,14 +55,14 @@ class DualKeyboard: Keyboard {
         
         // leftLabel
         leftButton.addSubview(leftLabel)
-        leftLabel.font = leftLabel.font?.withSize(40)
+        leftLabel.font = defaultLabelFont
         leftLabel.translatesAutoresizingMaskIntoConstraints = false
         leftButton.addConstraint(NSLayoutConstraint(item: leftLabel, attribute: .centerX, relatedBy: .equal, toItem: leftButton, attribute: .centerX, multiplier: 1, constant: 0))
         leftButton.addConstraint(NSLayoutConstraint(item: leftLabel, attribute: .centerY, relatedBy: .equal, toItem: leftButton, attribute: .centerY, multiplier: 1, constant: 0))
         
         // rightLabel
         rightButton.addSubview(rightLabel)
-        rightLabel.font = rightLabel.font?.withSize(40)
+        rightLabel.font = defaultLabelFont
         rightLabel.translatesAutoresizingMaskIntoConstraints = false
         rightButton.addConstraint(NSLayoutConstraint(item: rightLabel, attribute: .centerX, relatedBy: .equal, toItem: rightButton, attribute: .centerX, multiplier: 1, constant: 0))
         rightButton.addConstraint(NSLayoutConstraint(item: rightLabel, attribute: .centerY, relatedBy: .equal, toItem: rightButton, attribute: .centerY, multiplier: 1, constant: 0))
