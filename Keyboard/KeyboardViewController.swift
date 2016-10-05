@@ -8,54 +8,105 @@
 
 import UIKit
 
-class KeyboardViewController: UIInputViewController {
-
-    @IBOutlet var nextKeyboardButton: UIButton!
+class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
-    override func updateViewConstraints() {
-        super.updateViewConstraints()
+    let upperKeyboard = UpperKeyboard()
+    let lowerKeyboard = LowerKeyboard()
+    
+    var currentKeyboard: Keyboard
+    
+    // TODO: replace nextKeyboardButton and nextModeButton with gestures
+    let nextKeyboardButton = UIButton(type: .system)
+    let nextModeButton = UIButton(type: .system)
+    
+    enum Mode {
+        case upper
+        case lower
+        case numeral
+        case symbol
+    }
+    
+    private var mode: Mode = .upper {
+        didSet {
+            switch (mode) {
+            case .upper:
+                loadKeyboard(upperKeyboard)
+            case .lower:
+                loadKeyboard(lowerKeyboard)
+            default:
+                break
+            }
+        }
+    }
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {        
+        currentKeyboard = upperKeyboard
+
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
-        // Add custom view sizing constraints here
+        upperKeyboard.delegate = self
+        lowerKeyboard.delegate = self
+        
+        // TODO: remove when gestures are added
+        nextKeyboardButton.setTitle("NextKB", for: .normal)
+        nextModeButton.setTitle("NextMode", for: .normal)
+        nextKeyboardButton.addTarget(self, action: #selector(UIInputViewController.advanceToNextInputMode), for: .touchUpInside)
+        nextModeButton.addTarget(self, action: #selector(self.switchToNextMode), for: .touchUpInside)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadKeyboard(upperKeyboard)
+
+        // TODO: remove when gestures are added
         
-        // Perform custom UI setup here
-        self.nextKeyboardButton = UIButton(type: .system)
+        // nextKeyboardButton
+        view.addSubview(nextKeyboardButton)
+        nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraint(NSLayoutConstraint(item: nextKeyboardButton, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: nextKeyboardButton, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
         
-        self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
-        self.nextKeyboardButton.sizeToFit()
-        self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-        
-        self.view.addSubview(self.nextKeyboardButton)
-        
-        self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        // nextModeButton
+        view.addSubview(nextModeButton)
+        nextModeButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraint(NSLayoutConstraint(item: nextModeButton, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: nextModeButton, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
+
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated
+    private func loadKeyboard(_ keyboard: Keyboard) {
+        currentKeyboard.removeFromSuperview()
+        currentKeyboard = keyboard
+        keyboard.resetKeys()
+        view.addSubview(keyboard)
+        view.sendSubview(toBack: keyboard) // TODO: remove when gestures are added
+        keyboard.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
     }
     
-    override func textWillChange(_ textInput: UITextInput?) {
-        // The app is about to change the document's contents. Perform any preparation here.
+    func didSelect(char: Character) {
+        textDocumentProxy.insertText("\(char)")
+    }
+    
+    func switchToNextMode() {
+        switch mode {
+        case .upper:
+            mode = .lower
+        case .lower:
+            mode = .upper
+        default:
+            break
+        }
     }
     
     override func textDidChange(_ textInput: UITextInput?) {
-        // The app has just changed the document's contents, the document context has been updated.
-        
-        var textColor: UIColor
-        let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-            textColor = UIColor.white
-        } else {
-            textColor = UIColor.black
-        }
-        self.nextKeyboardButton.setTitleColor(textColor, for: [])
+        currentKeyboard.resetKeys()
     }
-
 }
