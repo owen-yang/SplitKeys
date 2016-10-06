@@ -3,6 +3,9 @@
 //  Keyboard
 //
 //  Created by Owen Yang on 9/28/16.
+//
+//  Edited by Samuel Dallstream
+//
 //  Copyright © 2016 SplitKeys. All rights reserved.
 //
 
@@ -21,7 +24,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeRightRecognizer = UISwipeGestureRecognizer()
     let swipeLeftRecognizer = UISwipeGestureRecognizer()
     let swipeUpRecognizer = UISwipeGestureRecognizer()
-    let twoSwipeDownRecognizer = UISwipeGestureRecognizer()
+    
+    var timeSpaceLastUsed = NSDate()
     
     enum Mode {
         case upper
@@ -53,21 +57,17 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         upperKeyboard.delegate = self
         lowerKeyboard.delegate = self
         
-        swipeRightRecognizer.direction = UISwipeGestureRecognizerDirection.right
+        swipeRightRecognizer.direction = .right
         swipeRightRecognizer.addTarget(self, action: #selector(self.switchToNextMode))
         
-        swipeUpRecognizer.direction = UISwipeGestureRecognizerDirection.up
+        swipeUpRecognizer.direction = .up
         swipeUpRecognizer.addTarget(self, action: #selector(UIInputViewController.advanceToNextInputMode))
         
-        swipeDownRecognizer.direction = UISwipeGestureRecognizerDirection.down
+        swipeDownRecognizer.direction = .down
         swipeDownRecognizer.addTarget(self, action: #selector(self.didSpace))
         
-        swipeLeftRecognizer.direction = UISwipeGestureRecognizerDirection.left
+        swipeLeftRecognizer.direction = .left
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didBackspace))
-        
-        twoSwipeDownRecognizer.numberOfTouchesRequired = 2
-        twoSwipeDownRecognizer.direction = UISwipeGestureRecognizerDirection.down
-        twoSwipeDownRecognizer.addTarget(self, action: #selector(self.didPeriodSpace))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -82,7 +82,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addGestureRecognizer(swipeDownRecognizer)
         view.addGestureRecognizer(swipeLeftRecognizer)
         view.addGestureRecognizer(swipeUpRecognizer)
-        view.addGestureRecognizer(twoSwipeDownRecognizer)
 
     }
     
@@ -111,10 +110,17 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didSpace() {
-        self.didSelect(char: " ")
+        let spaceDate = NSDate()
+        if spaceDate.timeIntervalSince(timeSpaceLastUsed as Date) < 0.5 {
+            self.handlePeriodSpace()
+        } else {
+            self.didSelect(char: " ")
+        }
+        timeSpaceLastUsed = spaceDate
     }
     
-    func didPeriodSpace() {
+    func handlePeriodSpace() {
+        textDocumentProxy.deleteBackward()
         self.didSelect(char: ".")
         self.didSelect(char: " ")
     }
