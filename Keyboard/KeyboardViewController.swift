@@ -3,6 +3,9 @@
 //  Keyboard
 //
 //  Created by Owen Yang on 9/28/16.
+//
+//  Edited by Samuel Dallstream
+//
 //  Copyright © 2016 SplitKeys. All rights reserved.
 //
 
@@ -17,9 +20,12 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     var currentKeyboard: Keyboard
     
-    // TODO: replace nextKeyboardButton and nextModeButton with gestures
-    let nextKeyboardButton = UIButton(type: .system)
-    let nextModeButton = UIButton(type: .system)
+    let swipeDownRecognizer = UISwipeGestureRecognizer()
+    let swipeRightRecognizer = UISwipeGestureRecognizer()
+    let swipeLeftRecognizer = UISwipeGestureRecognizer()
+    let swipeUpRecognizer = UISwipeGestureRecognizer()
+    
+    var timeSpaceLastUsed = NSDate()
     
     enum Mode {
         case upper
@@ -51,11 +57,17 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         upperKeyboard.delegate = self
         lowerKeyboard.delegate = self
         
-        // TODO: remove when gestures are added
-        nextKeyboardButton.setTitle("NextKB", for: .normal)
-        nextModeButton.setTitle("NextMode", for: .normal)
-        nextKeyboardButton.addTarget(self, action: #selector(UIInputViewController.advanceToNextInputMode), for: .touchUpInside)
-        nextModeButton.addTarget(self, action: #selector(self.switchToNextMode), for: .touchUpInside)
+        swipeRightRecognizer.direction = .right
+        swipeRightRecognizer.addTarget(self, action: #selector(self.switchToNextMode))
+        
+        swipeUpRecognizer.direction = .up
+        swipeUpRecognizer.addTarget(self, action: #selector(UIInputViewController.advanceToNextInputMode))
+        
+        swipeDownRecognizer.direction = .down
+        swipeDownRecognizer.addTarget(self, action: #selector(self.didSpace))
+        
+        swipeLeftRecognizer.direction = .left
+        swipeLeftRecognizer.addTarget(self, action: #selector(self.didBackspace))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -66,19 +78,10 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         super.viewDidLoad()
         loadKeyboard(upperKeyboard)
 
-        // TODO: remove when gestures are added
-        
-        // nextKeyboardButton
-        view.addSubview(nextKeyboardButton)
-        nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: nextKeyboardButton, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: nextKeyboardButton, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
-        
-        // nextModeButton
-        view.addSubview(nextModeButton)
-        nextModeButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: nextModeButton, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: nextModeButton, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
+        view.addGestureRecognizer(swipeRightRecognizer)
+        view.addGestureRecognizer(swipeDownRecognizer)
+        view.addGestureRecognizer(swipeLeftRecognizer)
+        view.addGestureRecognizer(swipeUpRecognizer)
 
     }
     
@@ -87,7 +90,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         currentKeyboard = keyboard
         keyboard.resetKeys()
         view.addSubview(keyboard)
-        view.sendSubview(toBack: keyboard) // TODO: remove when gestures are added
         keyboard.translatesAutoresizingMaskIntoConstraints = false
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
@@ -97,6 +99,30 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     func didSelect(char: Character) {
         textDocumentProxy.insertText("\(char)")
+    }
+    
+    func didBackspace() {
+        if currentKeyboard.isUserTyping() {
+            currentKeyboard.resetKeys()
+        } else {
+            textDocumentProxy.deleteBackward()
+        }
+    }
+    
+    func didSpace() {
+        let spaceDate = NSDate()
+        if spaceDate.timeIntervalSince(timeSpaceLastUsed as Date) < 0.5 {
+            self.handlePeriodSpace()
+        } else {
+            self.didSelect(char: " ")
+        }
+        timeSpaceLastUsed = spaceDate
+    }
+    
+    func handlePeriodSpace() {
+        textDocumentProxy.deleteBackward()
+        self.didSelect(char: ".")
+        self.didSelect(char: " ")
     }
     
     func switchToNextMode() {
