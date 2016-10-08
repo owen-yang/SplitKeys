@@ -74,18 +74,13 @@ class SymbolKeyboard: DualKeyboard {
     }
     
     private func previousSymbol() {
-        symbolIndex -= 1
+        symbolIndex += charSet.count - 1
         symbolIndex %= charSet.count
         updateButtonLabels()
     }
     
     private func updateButtonLabels() {
-        if symbolIndex > 0 {
-            leftLabel.text = "\(charSet[(symbolIndex - 1)])"
-        }
-        else {
-            leftLabel.text = "\(charSet[charSet.count - 1])"
-        }
+        leftLabel.text = symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])"
         rightLabel.text = "\(charSet[symbolIndex])"
     }
     

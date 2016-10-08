@@ -11,6 +11,7 @@
 		A82945B51DA40D6B0006FC21 /* DualKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */; };
 		A82945B91DA437230006FC21 /* SingleKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B81DA437230006FC21 /* SingleKeyboard.swift */; };
 		A86EE0B31DA569E50023AE9B /* AlphaKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */; };
+		A8C5C2CF1DA8771D007FF172 /* SymbolKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C5C2CE1DA8771D007FF172 /* SymbolKeyboard.swift */; };
 		A8D03AFF1D9C29AF00121139 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D03AFE1D9C29AF00121139 /* AppDelegate.swift */; };
 		A8D03B011D9C29AF00121139 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D03B001D9C29AF00121139 /* ViewController.swift */; };
 		A8D03B041D9C29AF00121139 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8D03B021D9C29AF00121139 /* Main.storyboard */; };
@@ -49,6 +50,7 @@
 		A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DualKeyboard.swift; sourceTree = "<group>"; };
 		A82945B81DA437230006FC21 /* SingleKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleKeyboard.swift; sourceTree = "<group>"; };
 		A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlphaKeyboard.swift; sourceTree = "<group>"; };
+		A8C5C2CE1DA8771D007FF172 /* SymbolKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SymbolKeyboard.swift; sourceTree = "<group>"; };
 		A8D03AFB1D9C29AF00121139 /* SplitKeys.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitKeys.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8D03AFE1D9C29AF00121139 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A8D03B001D9C29AF00121139 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */,
 				A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */,
 				A82945B81DA437230006FC21 /* SingleKeyboard.swift */,
+				A8C5C2CE1DA8771D007FF172 /* SymbolKeyboard.swift */,
 				A8D03B181D9C3E1400121139 /* Info.plist */,
 			);
 			path = Keyboard;
@@ -241,6 +244,7 @@
 				A82945B91DA437230006FC21 /* SingleKeyboard.swift in Sources */,
 				A82945B51DA40D6B0006FC21 /* DualKeyboard.swift in Sources */,
 				A86EE0B31DA569E50023AE9B /* AlphaKeyboard.swift in Sources */,
+				A8C5C2CF1DA8771D007FF172 /* SymbolKeyboard.swift in Sources */,
 				A82945B31DA40AC90006FC21 /* Keyboard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
