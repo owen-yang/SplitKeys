@@ -19,14 +19,15 @@ class DualKeyboard: Keyboard {
     
     let leftTapGestureRecognizer = UITapGestureRecognizer()
     let rightTapGestureRecognizer = UITapGestureRecognizer()
-    let longPressGestureRecognizer = UILongPressGestureRecognizer()
+    let leftlongPressGestureRecognizer = UILongPressGestureRecognizer()
+    let rightlongPressGestureRecognizer = UILongPressGestureRecognizer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         leftButton.addGestureRecognizer(leftTapGestureRecognizer)
         rightButton.addGestureRecognizer(rightTapGestureRecognizer)
-        addGestureRecognizer(longPressGestureRecognizer)
+        leftButton.addGestureRecognizer(leftlongPressGestureRecognizer)
+        rightButton.addGestureRecognizer(rightlongPressGestureRecognizer)
         
         // divider
         addSubview(divider)
