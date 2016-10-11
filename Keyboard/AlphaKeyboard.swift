@@ -59,8 +59,8 @@ class AlphaKeyboard: DualKeyboard {
         userTyping = false
         leftLowerIndex = 0
         leftUpperIndex = charSet.count / 2 - 1
-        rightLowerIndex = min(leftUpperIndex + 1, rightUpperIndex)
         rightUpperIndex = charSet.count - 1
+        rightLowerIndex = min(leftUpperIndex + 1, rightUpperIndex)
         updateButtonLabels()
     }
     
