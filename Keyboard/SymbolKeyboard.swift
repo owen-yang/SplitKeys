@@ -14,7 +14,7 @@ class SymbolKeyboard: DualKeyboard {
             resetKeys()
         }
     }
-    
+    //Make symbol selection occur after certain amt of time instead of after button release
     private var symbolIndex = 0
     private var index = 0
     private var userTyping = false;
@@ -46,9 +46,9 @@ class SymbolKeyboard: DualKeyboard {
     
     func didSelectSymbol(sender: UILongPressGestureRecognizer) {
         userTyping = true
-        if sender.state == .ended {
+        if sender.state == .began {
             if sender == leftlongPressGestureRecognizer {
-                index = (symbolIndex - 1) % charSet.count
+                index = symbolIndex > 0 ? (symbolIndex - 1) : charSet.count - 1
                 delegate?.didSelect(char: charSet[index])
             }
             else if sender == rightlongPressGestureRecognizer {
