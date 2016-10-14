@@ -10,6 +10,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
@@ -26,6 +27,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeUpRecognizer = UISwipeGestureRecognizer()
     
     var timeSpaceLastUsed = NSDate()
+    var feedbackOptions = FeedbackOptions()
+    let speechSynthesizer = AVSpeechSynthesizer()
     
     enum Mode {
         case upper
@@ -98,8 +101,20 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
     }
     
+    func giveSelectedFeedback(char: Character) {
+        if !feedbackOptions.use_audio {
+            return
+        }
+        let speechUtterance = AVSpeechUtterance(string: "\(char)")
+        speechSynthesizer.stopSpeaking(at: .immediate)
+        speechSynthesizer.speak(speechUtterance)
+    }
+    
     func didSelect(char: Character) {
         textDocumentProxy.insertText("\(char)")
+        if char != " " {
+            self.giveSelectedFeedback(char: char)
+        }
     }
     
     func didBackspace() {
@@ -142,4 +157,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     override func textDidChange(_ textInput: UITextInput?) {
         currentKeyboard.resetKeys()
     }
+}
+
+struct FeedbackOptions {
+    var use_audio = true
 }
