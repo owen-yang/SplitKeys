@@ -60,6 +60,10 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         lowerKeyboard.delegate = self
         symbolKeyboard.delegate = self
         
+        upperKeyboard.speechSynthesizer = speechSynthesizer
+        lowerKeyboard.speechSynthesizer = speechSynthesizer
+        symbolKeyboard.speechSynthesizer = speechSynthesizer
+        
         swipeRightRecognizer.direction = .right
         swipeRightRecognizer.addTarget(self, action: #selector(self.switchToNextMode))
         
@@ -111,9 +115,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     func didSelect(char: Character) {
         textDocumentProxy.insertText("\(char)")
-        if char != " " {
-            giveSelectedFeedback(char: char)
-        }
     }
     
     func didBackspace() {

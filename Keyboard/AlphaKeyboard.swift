@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class AlphaKeyboard: DualKeyboard {
     var charSet: [Character] = [] {
@@ -32,23 +33,53 @@ class AlphaKeyboard: DualKeyboard {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func didTapButton(sender: UITapGestureRecognizer) {
+    override func handleButtonTap(sender: UITapGestureRecognizer) {
         userTyping = true
         if sender == leftTapGestureRecognizer {
             if leftLowerIndex == leftUpperIndex {
-                delegate?.didSelect(char: charSet[leftLowerIndex])
+                charSelected(char: charSet[leftLowerIndex])
                 resetIndexes()
             } else {
                 expandLeftIndexes()
             }
         } else if sender == rightTapGestureRecognizer {
             if rightLowerIndex == rightUpperIndex {
-                delegate?.didSelect(char: charSet[rightLowerIndex])
+                charSelected(char: charSet[rightLowerIndex])
                 resetIndexes()
             } else {
                 expandRightIndexes()
             }
         }
+    }
+    
+    func createDialog(lowerBound: Int, upperBound: Int) -> [AVSpeechUtterance] {
+        if lowerBound == upperBound {
+            return [AVSpeechUtterance(string: "\(charSet[lowerBound])")]
+        }
+        return [
+            AVSpeechUtterance(string: "\(charSet[lowerBound])"),
+            AVSpeechUtterance(string: "to"),
+            AVSpeechUtterance(string: "\(charSet[upperBound])")
+            ]
+    }
+    
+    func speakUtterances(utterances: [AVSpeechUtterance]) {
+        for utterance in utterances {
+            speechSynthesizer?.speak(utterance)
+        }
+    }
+    
+    override func announceState() {
+        if !Settings.isAudioEnabled {
+            return
+        }
+        if !charJustAnnounced {
+            speechSynthesizer?.stopSpeaking(at: .immediate)
+        }
+        let leftUtterances = createDialog(lowerBound: leftLowerIndex, upperBound: leftUpperIndex)
+        let rightUtterances = createDialog(lowerBound: rightLowerIndex, upperBound: rightUpperIndex)
+        speakUtterances(utterances: leftUtterances)
+        speakUtterances(utterances: rightUtterances)
     }
     
     override func resetKeys() {

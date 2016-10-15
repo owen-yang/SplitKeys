@@ -24,8 +24,6 @@ class SymbolKeyboard: DualKeyboard {
         charSet = [",", ".", "-", "\"", "_", "'", "(", ")", ";", "=", ":",
                    "/", "*", "!", "?", "$", ">", "{", "}", "[", "]", "\\", "+",
                    "|", "&", "<", "%", "@", "#", "^", "`", "~"]
-        leftTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
-        rightTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
         leftlongPressGestureRecognizer.addTarget(self, action: #selector(self.didSelectSymbol(sender:)))
         rightlongPressGestureRecognizer.addTarget(self, action: #selector(self.didSelectSymbol(sender:)))
     }
@@ -34,7 +32,7 @@ class SymbolKeyboard: DualKeyboard {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func didTapButton(sender: UITapGestureRecognizer) {
+    override func handleButtonTap(sender: UITapGestureRecognizer) {
         userTyping = true
         if sender == leftTapGestureRecognizer {
             previousSymbol()
