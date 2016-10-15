@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class SymbolKeyboard: DualKeyboard {
     var charSet: [Character] = [] {
@@ -42,15 +43,28 @@ class SymbolKeyboard: DualKeyboard {
         }
     }
     
+    override func announceState() {
+        if !Settings.isAudioEnabled {
+            return
+        }
+        if !charJustAnnounced {
+            speechSynthesizer?.stopSpeaking(at: .immediate)
+        }
+        let leftUtterance = AVSpeechUtterance(string: symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])")
+        let rightUtterance = AVSpeechUtterance(string: "\(charSet[symbolIndex])")
+        speechSynthesizer?.speak(leftUtterance)
+        speechSynthesizer?.speak(rightUtterance)
+    }
+    
     func didSelectSymbol(sender: UILongPressGestureRecognizer) {
         userTyping = true
         if sender.state == .began {
             if sender == leftlongPressGestureRecognizer {
                 index = symbolIndex > 0 ? (symbolIndex - 1) : charSet.count - 1
-                delegate?.didSelect(char: charSet[index])
+                charSelected(char: charSet[index])
             }
             else if sender == rightlongPressGestureRecognizer {
-                delegate?.didSelect(char: charSet[symbolIndex])
+                charSelected(char: charSet[symbolIndex])
             }
         }
     }

@@ -35,7 +35,7 @@ class Keyboard: UIView {
     }
     
     func announceState() {
-        fatalError("announceState() not implemented")
+        //fatalError("announceState() not implemented")
     }
     
     final func charSelected(char: Character) {
