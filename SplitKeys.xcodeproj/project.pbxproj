@@ -11,10 +11,12 @@
 		A82945B51DA40D6B0006FC21 /* DualKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */; };
 		A82945B91DA437230006FC21 /* SingleKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B81DA437230006FC21 /* SingleKeyboard.swift */; };
 		A86EE0B31DA569E50023AE9B /* AlphaKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */; };
+		A8A260CF1DB1405A000A813F /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55181DB029CA0043A87C /* Settings.swift */; };
+		A8AB55151DB022DD0043A87C /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55141DB022DD0043A87C /* SettingsTableViewController.swift */; };
+		A8AB55171DB024300043A87C /* AudioToggleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55161DB024300043A87C /* AudioToggleTableViewCell.swift */; };
+		A8AB55191DB029CA0043A87C /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55181DB029CA0043A87C /* Settings.swift */; };
 		A8C5C2CF1DA8771D007FF172 /* SymbolKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C5C2CE1DA8771D007FF172 /* SymbolKeyboard.swift */; };
 		A8D03AFF1D9C29AF00121139 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D03AFE1D9C29AF00121139 /* AppDelegate.swift */; };
-		A8D03B011D9C29AF00121139 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D03B001D9C29AF00121139 /* ViewController.swift */; };
-		A8D03B041D9C29AF00121139 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8D03B021D9C29AF00121139 /* Main.storyboard */; };
 		A8D03B061D9C29AF00121139 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8D03B051D9C29AF00121139 /* Assets.xcassets */; };
 		A8D03B091D9C29AF00121139 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8D03B071D9C29AF00121139 /* LaunchScreen.storyboard */; };
 		A8D03B171D9C3E1400121139 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D03B161D9C3E1400121139 /* KeyboardViewController.swift */; };
@@ -50,11 +52,14 @@
 		A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DualKeyboard.swift; sourceTree = "<group>"; };
 		A82945B81DA437230006FC21 /* SingleKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleKeyboard.swift; sourceTree = "<group>"; };
 		A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlphaKeyboard.swift; sourceTree = "<group>"; };
+		A8A260CD1DB13CE0000A813F /* SplitKeys.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SplitKeys.entitlements; sourceTree = "<group>"; };
+		A8A260CE1DB13EC4000A813F /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Keyboard.entitlements; sourceTree = "<group>"; };
+		A8AB55141DB022DD0043A87C /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		A8AB55161DB024300043A87C /* AudioToggleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioToggleTableViewCell.swift; sourceTree = "<group>"; };
+		A8AB55181DB029CA0043A87C /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		A8C5C2CE1DA8771D007FF172 /* SymbolKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SymbolKeyboard.swift; sourceTree = "<group>"; };
 		A8D03AFB1D9C29AF00121139 /* SplitKeys.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitKeys.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8D03AFE1D9C29AF00121139 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A8D03B001D9C29AF00121139 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		A8D03B031D9C29AF00121139 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A8D03B051D9C29AF00121139 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A8D03B081D9C29AF00121139 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A8D03B0A1D9C29AF00121139 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -81,6 +86,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A8A260D01DB14168000A813F /* Settings Cells */ = {
+			isa = PBXGroup;
+			children = (
+				A8AB55161DB024300043A87C /* AudioToggleTableViewCell.swift */,
+			);
+			name = "Settings Cells";
+			sourceTree = "<group>";
+		};
 		A8D03AF21D9C29AF00121139 = {
 			isa = PBXGroup;
 			children = (
@@ -102,9 +115,11 @@
 		A8D03AFD1D9C29AF00121139 /* SplitKeys */ = {
 			isa = PBXGroup;
 			children = (
+				A8A260CD1DB13CE0000A813F /* SplitKeys.entitlements */,
 				A8D03AFE1D9C29AF00121139 /* AppDelegate.swift */,
-				A8D03B001D9C29AF00121139 /* ViewController.swift */,
-				A8D03B021D9C29AF00121139 /* Main.storyboard */,
+				A8AB55141DB022DD0043A87C /* SettingsTableViewController.swift */,
+				A8A260D01DB14168000A813F /* Settings Cells */,
+				A8AB55181DB029CA0043A87C /* Settings.swift */,
 				A8D03B051D9C29AF00121139 /* Assets.xcassets */,
 				A8D03B071D9C29AF00121139 /* LaunchScreen.storyboard */,
 				A8D03B0A1D9C29AF00121139 /* Info.plist */,
@@ -115,6 +130,7 @@
 		A8D03B151D9C3E1400121139 /* Keyboard */ = {
 			isa = PBXGroup;
 			children = (
+				A8A260CE1DB13EC4000A813F /* Keyboard.entitlements */,
 				A8D03B161D9C3E1400121139 /* KeyboardViewController.swift */,
 				A82945B21DA40AC90006FC21 /* Keyboard.swift */,
 				A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */,
@@ -179,11 +195,21 @@
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = XDAT956V5M;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					A8D03B131D9C3E1400121139 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = XDAT956V5M;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -213,7 +239,6 @@
 			files = (
 				A8D03B091D9C29AF00121139 /* LaunchScreen.storyboard in Resources */,
 				A8D03B061D9C29AF00121139 /* Assets.xcassets in Resources */,
-				A8D03B041D9C29AF00121139 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,7 +256,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A8D03B011D9C29AF00121139 /* ViewController.swift in Sources */,
+				A8AB55171DB024300043A87C /* AudioToggleTableViewCell.swift in Sources */,
+				A8AB55151DB022DD0043A87C /* SettingsTableViewController.swift in Sources */,
+				A8AB55191DB029CA0043A87C /* Settings.swift in Sources */,
 				A8D03AFF1D9C29AF00121139 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -240,6 +267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8A260CF1DB1405A000A813F /* Settings.swift in Sources */,
 				A8D03B171D9C3E1400121139 /* KeyboardViewController.swift in Sources */,
 				A82945B91DA437230006FC21 /* SingleKeyboard.swift in Sources */,
 				A82945B51DA40D6B0006FC21 /* DualKeyboard.swift in Sources */,
@@ -260,14 +288,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		A8D03B021D9C29AF00121139 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A8D03B031D9C29AF00121139 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		A8D03B071D9C29AF00121139 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -379,6 +399,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SplitKeys/SplitKeys.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = XDAT956V5M;
@@ -396,6 +417,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SplitKeys/SplitKeys.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = XDAT956V5M;
@@ -411,6 +433,7 @@
 		A8D03B1D1D9C3E1400121139 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Keyboard/Keyboard.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = XDAT956V5M;
@@ -427,6 +450,7 @@
 		A8D03B1E1D9C3E1400121139 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Keyboard/Keyboard.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = XDAT956V5M;
