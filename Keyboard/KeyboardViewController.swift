@@ -28,6 +28,9 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     var timeSpaceLastUsed = NSDate()
     let speechSynthesizer = AVSpeechSynthesizer()
+    let spaceUtterance = AVSpeechUtterance(string: "space")
+    let periodUtterance = AVSpeechUtterance(string: ".")
+    let backspaceUtterance = AVSpeechUtterance(string: "backspace")
     
     enum Mode {
         case upper
@@ -105,15 +108,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         currentKeyboard.announceState()
     }
     
-    func giveSelectedFeedback(char: Character) {
-        if !Settings.isAudioEnabled {
-            return
-        }
-        let speechUtterance = AVSpeechUtterance(string: "\(char)")
-        speechSynthesizer.stopSpeaking(at: .immediate)
-        speechSynthesizer.speak(speechUtterance)
-    }
-    
     func didSelect(char: Character) {
         textDocumentProxy.insertText("\(char)")
     }
@@ -121,8 +115,17 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     func didBackspace() {
         if currentKeyboard.isUserTyping() {
             currentKeyboard.resetKeys()
+            currentKeyboard.announceState()
         } else {
-            textDocumentProxy.deleteBackward()
+            handleBackspace()
+        }
+    }
+    
+    func handleBackspace() {
+        textDocumentProxy.deleteBackward()
+        if Settings.isAudioEnabled {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+            speechSynthesizer.speak(backspaceUtterance)
         }
     }
     
@@ -131,15 +134,28 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         if spaceDate.timeIntervalSince(timeSpaceLastUsed as Date) < 0.5 {
             handlePeriodSpace()
         } else {
-            didSelect(char: " ")
+            handleSpace()
         }
         timeSpaceLastUsed = spaceDate
+    }
+    
+    func handleSpace() {
+        didSelect(char: " ")
+        if Settings.isAudioEnabled {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+            speechSynthesizer.speak(spaceUtterance)
+        }
     }
     
     func handlePeriodSpace() {
         textDocumentProxy.deleteBackward()
         didSelect(char: ".")
         didSelect(char: " ")
+        if Settings.isAudioEnabled {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+            speechSynthesizer.speak(periodUtterance)
+            speechSynthesizer.speak(spaceUtterance)
+        }
     }
     
     func switchToNextMode() {
