@@ -27,7 +27,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeUpRecognizer = UISwipeGestureRecognizer()
     
     var timeSpaceLastUsed = NSDate()
-    var feedbackOptions = FeedbackOptions()
     let speechSynthesizer = AVSpeechSynthesizer()
     
     enum Mode {
@@ -102,7 +101,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func giveSelectedFeedback(char: Character) {
-        if !feedbackOptions.use_audio {
+        if !Settings.isAudioEnabled {
             return
         }
         let speechUtterance = AVSpeechUtterance(string: "\(char)")
@@ -113,7 +112,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     func didSelect(char: Character) {
         textDocumentProxy.insertText("\(char)")
         if char != " " {
-            self.giveSelectedFeedback(char: char)
+            giveSelectedFeedback(char: char)
         }
     }
     
@@ -128,17 +127,17 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     func didSpace() {
         let spaceDate = NSDate()
         if spaceDate.timeIntervalSince(timeSpaceLastUsed as Date) < 0.5 {
-            self.handlePeriodSpace()
+            handlePeriodSpace()
         } else {
-            self.didSelect(char: " ")
+            didSelect(char: " ")
         }
         timeSpaceLastUsed = spaceDate
     }
     
     func handlePeriodSpace() {
         textDocumentProxy.deleteBackward()
-        self.didSelect(char: ".")
-        self.didSelect(char: " ")
+        didSelect(char: ".")
+        didSelect(char: " ")
     }
     
     func switchToNextMode() {
@@ -157,8 +156,4 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     override func textDidChange(_ textInput: UITextInput?) {
         currentKeyboard.resetKeys()
     }
-}
-
-struct FeedbackOptions {
-    var use_audio = true
 }
