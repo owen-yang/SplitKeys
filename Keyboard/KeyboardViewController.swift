@@ -18,6 +18,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let lowerKeyboard = LowerKeyboard()
     let numeralKeyboard = SingleKeyboard()
     let symbolKeyboard = SymbolKeyboard()
+    var keyboardJustSwitched = false
     
     var currentKeyboard: Keyboard
     
@@ -25,12 +26,14 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeRightRecognizer = UISwipeGestureRecognizer()
     let swipeLeftRecognizer = UISwipeGestureRecognizer()
     let swipeUpRecognizer = UISwipeGestureRecognizer()
+    var periodJustEntered = false
     
     var timeSpaceLastUsed = NSDate()
     let speechSynthesizer = AVSpeechSynthesizer()
     let spaceUtterance = AVSpeechUtterance(string: "space")
     let periodUtterance = AVSpeechUtterance(string: ".")
     let backspaceUtterance = AVSpeechUtterance(string: "backspace")
+    var characterJustSelected = false
     
     enum Mode {
         case upper
@@ -63,10 +66,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         lowerKeyboard.delegate = self
         symbolKeyboard.delegate = self
         
-        upperKeyboard.speechSynthesizer = speechSynthesizer
-        lowerKeyboard.speechSynthesizer = speechSynthesizer
-        symbolKeyboard.speechSynthesizer = speechSynthesizer
-        
         swipeRightRecognizer.direction = .right
         swipeRightRecognizer.addTarget(self, action: #selector(self.switchToNextMode))
         
@@ -74,10 +73,10 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         swipeUpRecognizer.addTarget(self, action: #selector(UIInputViewController.advanceToNextInputMode))
         
         swipeDownRecognizer.direction = .down
-        swipeDownRecognizer.addTarget(self, action: #selector(self.didSpace))
+        swipeDownRecognizer.addTarget(self, action: #selector(self.didSwipeDown))
         
         swipeLeftRecognizer.direction = .left
-        swipeLeftRecognizer.addTarget(self, action: #selector(self.didBackspace))
+        swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -105,17 +104,26 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
-        currentKeyboard.announceState()
+        if Settings.isAudioEnabled {
+            speakImmediate(word: currentKeyboard.getName())
+        }
+        keyboardJustSwitched = true
+        handleStateChange()
     }
     
     func didSelect(char: Character) {
         textDocumentProxy.insertText("\(char)")
+        if Settings.isAudioEnabled {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+            speechSynthesizer.speak(AVSpeechUtterance(string: "\(char)"))
+        }
+        characterJustSelected = true
     }
     
-    func didBackspace() {
+    func didSwipeLeft() {
         if currentKeyboard.isUserTyping() {
             currentKeyboard.resetKeys()
-            currentKeyboard.announceState()
+            handleStateChange()
         } else {
             handleBackspace()
         }
@@ -124,14 +132,13 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     func handleBackspace() {
         textDocumentProxy.deleteBackward()
         if Settings.isAudioEnabled {
-            speechSynthesizer.stopSpeaking(at: .immediate)
-            speechSynthesizer.speak(backspaceUtterance)
+            speakImmediate(word: "backspace")
         }
     }
     
-    func didSpace() {
+    func didSwipeDown() {
         let spaceDate = NSDate()
-        if spaceDate.timeIntervalSince(timeSpaceLastUsed as Date) < 0.5 {
+        if spaceDate.timeIntervalSince(timeSpaceLastUsed as Date) < 0.5 && !periodJustEntered {
             handlePeriodSpace()
         } else {
             handleSpace()
@@ -140,21 +147,36 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func handleSpace() {
-        didSelect(char: " ")
+        textDocumentProxy.insertText(" ")
         if Settings.isAudioEnabled {
-            speechSynthesizer.stopSpeaking(at: .immediate)
-            speechSynthesizer.speak(spaceUtterance)
+            speakImmediate(word: " ")
         }
     }
     
     func handlePeriodSpace() {
         textDocumentProxy.deleteBackward()
-        didSelect(char: ".")
-        didSelect(char: " ")
+        textDocumentProxy.insertText(".")
+        textDocumentProxy.insertText(" ")
         if Settings.isAudioEnabled {
             speechSynthesizer.stopSpeaking(at: .immediate)
             speechSynthesizer.speak(periodUtterance)
             speechSynthesizer.speak(spaceUtterance)
+        }
+        periodJustEntered = true
+    }
+    
+    func speakImmediate(word: String) {
+        speechSynthesizer.stopSpeaking(at: .immediate)
+        speechSynthesizer.speak(AVSpeechUtterance(string: word))
+    }
+    
+    func announceState(state: String) {
+        let wordsArray = state.lowercased().characters.split(separator: " ").map(String.init)
+        if !characterJustSelected && !keyboardJustSwitched {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+        }
+        for word in wordsArray {
+            speechSynthesizer.speak(AVSpeechUtterance(string: word))
         }
     }
     
@@ -173,5 +195,14 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     override func textDidChange(_ textInput: UITextInput?) {
         currentKeyboard.resetKeys()
+    }
+    
+    func handleStateChange() {
+        if Settings.isAudioEnabled {
+           announceState(state: currentKeyboard.getStateString())
+        }
+        characterJustSelected = false
+        periodJustEntered = false
+        keyboardJustSwitched = false
     }
 }
