@@ -16,7 +16,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     let upperKeyboard = UpperKeyboard()
     let lowerKeyboard = LowerKeyboard()
-    let numeralKeyboard = SingleKeyboard()
+    let numeralKeyboard = NumeralKeyboard()
     let symbolKeyboard = SymbolKeyboard()
     
     var currentKeyboard: Keyboard
@@ -62,6 +62,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         upperKeyboard.delegate = self
         lowerKeyboard.delegate = self
         symbolKeyboard.delegate = self
+        numeralKeyboard.delegate = self
         
         upperKeyboard.speechSynthesizer = speechSynthesizer
         lowerKeyboard.speechSynthesizer = speechSynthesizer
