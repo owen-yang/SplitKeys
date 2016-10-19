@@ -11,6 +11,7 @@
 		A82945B51DA40D6B0006FC21 /* DualKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */; };
 		A82945B91DA437230006FC21 /* SingleKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B81DA437230006FC21 /* SingleKeyboard.swift */; };
 		A86EE0B31DA569E50023AE9B /* AlphaKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */; };
+		A871ED6A1DB724B800642B51 /* NumeralKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A871ED691DB724B800642B51 /* NumeralKeyboard.swift */; };
 		A8A260CF1DB1405A000A813F /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55181DB029CA0043A87C /* Settings.swift */; };
 		A8AB55151DB022DD0043A87C /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55141DB022DD0043A87C /* SettingsTableViewController.swift */; };
 		A8AB55171DB024300043A87C /* AudioToggleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55161DB024300043A87C /* AudioToggleTableViewCell.swift */; };
@@ -52,6 +53,7 @@
 		A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DualKeyboard.swift; sourceTree = "<group>"; };
 		A82945B81DA437230006FC21 /* SingleKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleKeyboard.swift; sourceTree = "<group>"; };
 		A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlphaKeyboard.swift; sourceTree = "<group>"; };
+		A871ED691DB724B800642B51 /* NumeralKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumeralKeyboard.swift; sourceTree = "<group>"; };
 		A8A260CD1DB13CE0000A813F /* SplitKeys.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SplitKeys.entitlements; sourceTree = "<group>"; };
 		A8A260CE1DB13EC4000A813F /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Keyboard.entitlements; sourceTree = "<group>"; };
 		A8AB55141DB022DD0043A87C /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */,
 				A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */,
 				A82945B81DA437230006FC21 /* SingleKeyboard.swift */,
+				A871ED691DB724B800642B51 /* NumeralKeyboard.swift */,
 				A8C5C2CE1DA8771D007FF172 /* SymbolKeyboard.swift */,
 				A8D03B181D9C3E1400121139 /* Info.plist */,
 			);
@@ -272,6 +275,7 @@
 				A82945B91DA437230006FC21 /* SingleKeyboard.swift in Sources */,
 				A82945B51DA40D6B0006FC21 /* DualKeyboard.swift in Sources */,
 				A86EE0B31DA569E50023AE9B /* AlphaKeyboard.swift in Sources */,
+				A871ED6A1DB724B800642B51 /* NumeralKeyboard.swift in Sources */,
 				A8C5C2CF1DA8771D007FF172 /* SymbolKeyboard.swift in Sources */,
 				A82945B31DA40AC90006FC21 /* Keyboard.swift in Sources */,
 			);

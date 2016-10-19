@@ -8,58 +8,52 @@
 
 import UIKit
 
-class NumeralKeyboard: SingleKeyboard
-{
-    var charSet: [Character] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-    private var counter = 0;
-    private var timer:Timer? = nil;
-    private var waitInterval = 3.0
+class NumeralKeyboard: SingleKeyboard {
     
-    override init(frame: CGRect)
-    {
+    private var counter: Int {
+        didSet {
+            label.text = "\(counter)"
+        }
+    }
+    
+    private var timer: Timer?
+    private let waitInterval = 1.0
+    
+    override init(frame: CGRect) {
+        counter = 0
         super.init(frame: frame)
-        self.label.text = "\(counter)"
-        tapGestureRecognizer.addTarget(self, action: #selector(self.TapNumeralKeyboard(sender:)))
-        longPressGestureRecognizer.addTarget(self, action: #selector(self.SelectZero(sender:)))
+        tapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
+        longPressGestureRecognizer.addTarget(self, action: #selector(self.didLongPress(sender:)))
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func TapNumeralKeyboard(sender: UITapGestureRecognizer)
-    {
-        self.label.text = "\(counter)"
+    func didTapButton(sender: UITapGestureRecognizer) {
         timer?.invalidate()
-        
-        timer = Timer.scheduledTimer(timeInterval: waitInterval, target: self, selector: #selector(ResetKeyboard), userInfo: nil, repeats: false)
-        if (counter + 1 > 9)
-        {
-            counter = 1
-        }
-        else
-        {
-            counter += 1
-        }
-        self.label.text = "\(counter)"
+        timer = Timer.scheduledTimer(timeInterval: waitInterval, target: self, selector: #selector(self.didSelectNumeral), userInfo: nil, repeats: false)
+        counter = counter % 9 + 1
     }
     
-    func SelectZero(sender: UILongPressGestureRecognizer)
-    {
-        if sender.state == .began
-        {
-            timer?.invalidate()
+    func didLongPress(sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
             delegate?.didSelect(char: "0")
-            counter = 0
-            self.label.text = "\(counter)"
+            resetKeys()
         }
     }
     
-    func ResetKeyboard()
-    {
-        delegate?.didSelect(char: charSet[counter - 1])
+    func didSelectNumeral() {
+        delegate?.didSelect(char: Character("\(counter)"))
+        resetKeys()
+    }
+    
+    override func resetKeys() {
+        timer?.invalidate()
         counter = 0
-        self.label.text = "\(counter)"
+    }
+    
+    override func isUserTyping() -> Bool {
+        return counter != 0
     }
 }
