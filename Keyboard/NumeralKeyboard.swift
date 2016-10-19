@@ -30,10 +30,18 @@ class NumeralKeyboard: SingleKeyboard {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func didTapButton(sender: UITapGestureRecognizer) {
+    override func handleButtonTap(sender: UITapGestureRecognizer) {
         timer?.invalidate()
         timer = Timer.scheduledTimer(timeInterval: waitInterval, target: self, selector: #selector(self.didSelectNumeral), userInfo: nil, repeats: false)
         counter = counter % 9 + 1
+    }
+    
+    override func getStateString() -> String {
+        return "\(counter)"
+    }
+    
+    override func getName() -> String {
+        return "Numerals"
     }
     
     func didLongPress(sender: UILongPressGestureRecognizer) {

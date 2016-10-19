@@ -150,7 +150,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     func handleSpace() {
         textDocumentProxy.insertText(" ")
         if Settings.isAudioEnabled {
-            speakImmediate(word: " ")
+            speakImmediate(word: "space")
         }
     }
     
