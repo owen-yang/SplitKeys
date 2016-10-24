@@ -21,9 +21,9 @@ class SymbolKeyboard: DualKeyboard {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        charSet = [",", ".", "-", "\"", "_", "'", "(", ")", ";", "=", ":",
-                   "/", "*", "!", "?", "$", ">", "{", "}", "[", "]", "\\", "+",
-                   "|", "&", "<", "%", "@", "#", "^", "`", "~"]
+        charSet = [",", ".", "\"", ")", "(", "?", ":", "'", "!", ";", "-", "*",
+                   "@", "_", "=", "%", "$", "#", "&", "/", ">", "{", "}", "[", "]",
+                   "\\", "+", "|", "<", "~", "^", "`"]
         leftTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
         rightTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
         leftlongPressGestureRecognizer.addTarget(self, action: #selector(self.didSelectSymbol(sender:)))
