@@ -27,6 +27,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeUpRecognizer = UISwipeGestureRecognizer()
     
     var timeSpaceLastUsed = NSDate()
+    var timeBackspaceLastUsed = NSDate()
     let speechSynthesizer = AVSpeechSynthesizer()
     
     enum Mode {
@@ -118,10 +119,16 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didBackspace() {
+        let backspaceDate = NSDate()
         if currentKeyboard.isUserTyping() {
             currentKeyboard.resetKeys()
         } else {
-            textDocumentProxy.deleteBackward()
+            if backspaceDate.timeIntervalSince(timeBackspaceLastUsed as Date) < 1 {
+                deleteWord()
+            } else {
+                textDocumentProxy.deleteBackward()
+            }
+            timeBackspaceLastUsed = backspaceDate
         }
     }
     
@@ -133,6 +140,17 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
             didSelect(char: " ")
         }
         timeSpaceLastUsed = spaceDate
+    }
+    
+    func deleteWord() {
+        let proxy = self.textDocumentProxy
+        if let lastWord: [String]? = proxy.documentContextBeforeInput?.components(separatedBy: " ") {
+            if let textArray = lastWord {
+                for _ in 0 ..< (textArray.last?.characters.count)! {
+                    proxy.deleteBackward()
+                }
+            }
+        }
     }
     
     func handlePeriodSpace() {
