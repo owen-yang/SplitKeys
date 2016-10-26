@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class SymbolKeyboard: DualKeyboard {
     var charSet: [Character] = [] {
@@ -34,7 +35,7 @@ class SymbolKeyboard: DualKeyboard {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func didTapButton(sender: UITapGestureRecognizer) {
+    override func handleButtonTap(sender: UITapGestureRecognizer) {
         userTyping = true
         if sender == leftTapGestureRecognizer {
             previousSymbol()
@@ -42,6 +43,12 @@ class SymbolKeyboard: DualKeyboard {
         else if sender == rightTapGestureRecognizer {
             nextSymbol()
         }
+    }
+    
+    override func getStateString() -> String {
+        return (symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])") +
+            " " +
+            "\(charSet[symbolIndex])"
     }
     
     func didSelectSymbol(sender: UILongPressGestureRecognizer) {
@@ -86,5 +93,9 @@ class SymbolKeyboard: DualKeyboard {
     
     override func isUserTyping() -> Bool {
         return userTyping
+    }
+    
+    override func getName() -> String {
+        return "Symbols"
     }
 }

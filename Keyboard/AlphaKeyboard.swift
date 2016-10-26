@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class AlphaKeyboard: DualKeyboard {
     var charSet: [Character] = [] {
@@ -32,7 +33,7 @@ class AlphaKeyboard: DualKeyboard {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func didTapButton(sender: UITapGestureRecognizer) {
+    override func handleButtonTap(sender: UITapGestureRecognizer) {
         userTyping = true
         if sender == leftTapGestureRecognizer {
             if leftLowerIndex == leftUpperIndex {
@@ -49,6 +50,19 @@ class AlphaKeyboard: DualKeyboard {
                 expandRightIndexes()
             }
         }
+    }
+    
+    func createStateString(lowerBound: Int, upperBound: Int) -> String {
+        if lowerBound == upperBound {
+            return "\(charSet[lowerBound])"
+        }
+        return "\(charSet[lowerBound])" + " to " + "\(charSet[upperBound])"
+    }
+    
+    override func getStateString() -> String {
+        return createStateString(lowerBound: leftLowerIndex, upperBound: leftUpperIndex) +
+            " " +
+            createStateString(lowerBound: rightLowerIndex, upperBound: rightUpperIndex)
     }
     
     override func resetKeys() {
@@ -101,6 +115,10 @@ class UpperKeyboard: AlphaKeyboard {
         charSet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     }
     
+    override func getName() -> String {
+        return "Uppercase"
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -110,6 +128,10 @@ class LowerKeyboard: AlphaKeyboard {
     override init(frame: CGRect) {
         super.init(frame: frame)
         charSet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    }
+    
+    override func getName() -> String {
+        return "Lowercase"
     }
     
     required init?(coder aDecoder: NSCoder) {

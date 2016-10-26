@@ -18,6 +18,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let lowerKeyboard = LowerKeyboard()
     let numeralKeyboard = NumeralKeyboard()
     let symbolKeyboard = SymbolKeyboard()
+    var keyboardJustSwitched = false
     
     var currentKeyboard: Keyboard
     
@@ -25,10 +26,15 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeRightRecognizer = UISwipeGestureRecognizer()
     let swipeLeftRecognizer = UISwipeGestureRecognizer()
     let swipeUpRecognizer = UISwipeGestureRecognizer()
+    var periodJustEntered = false
     
-    var timeSpaceLastUsed = NSDate()
-    var timeBackspaceLastUsed = NSDate()
+    var timeSpaceLastUsed = Date()
+    var timeBackspaceLastUsed = Date()
     let speechSynthesizer = AVSpeechSynthesizer()
+    let spaceUtterance = AVSpeechUtterance(string: "space")
+    let periodUtterance = AVSpeechUtterance(string: ".")
+    let backspaceUtterance = AVSpeechUtterance(string: "backspace")
+    var characterJustSelected = false
     
     enum Mode {
         case upper
@@ -69,10 +75,10 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         swipeUpRecognizer.addTarget(self, action: #selector(UIInputViewController.advanceToNextInputMode))
         
         swipeDownRecognizer.direction = .down
-        swipeDownRecognizer.addTarget(self, action: #selector(self.didSpace))
+        swipeDownRecognizer.addTarget(self, action: #selector(self.didSwipeDown))
         
         swipeLeftRecognizer.direction = .left
-        swipeLeftRecognizer.addTarget(self, action: #selector(self.didBackspace))
+        swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -100,63 +106,99 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
-    }
-    
-    func giveSelectedFeedback(char: Character) {
-        if !Settings.isAudioEnabled {
-            return
+        if Settings.isAudioEnabled {
+            speakImmediate(word: currentKeyboard.getName())
         }
-        let speechUtterance = AVSpeechUtterance(string: "\(char)")
-        speechSynthesizer.stopSpeaking(at: .immediate)
-        speechSynthesizer.speak(speechUtterance)
+        keyboardJustSwitched = true
+        handleStateChange()
     }
     
     func didSelect(char: Character) {
         textDocumentProxy.insertText("\(char)")
-        if char != " " {
-            giveSelectedFeedback(char: char)
+        if Settings.isAudioEnabled {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+            speechSynthesizer.speak(AVSpeechUtterance(string: "\(char)"))
         }
+        characterJustSelected = true
     }
     
-    func didBackspace() {
-        let backspaceDate = NSDate()
+    func didSwipeLeft() {
+        let backspaceDate = Date()
         if currentKeyboard.isUserTyping() {
             currentKeyboard.resetKeys()
+            handleStateChange()
         } else {
-            if backspaceDate.timeIntervalSince(timeBackspaceLastUsed as Date) < 1 {
+            if backspaceDate.timeIntervalSince(timeBackspaceLastUsed) < 0.5 && canDeleteWord() {
                 deleteWord()
             } else {
-                textDocumentProxy.deleteBackward()
+                backspace()
             }
             timeBackspaceLastUsed = backspaceDate
         }
     }
     
-    func didSpace() {
-        let spaceDate = NSDate()
-        if spaceDate.timeIntervalSince(timeSpaceLastUsed as Date) < 0.5 {
+    func backspace() {
+        textDocumentProxy.deleteBackward()
+        if Settings.isAudioEnabled {
+            speakImmediate(word: "backspace")
+        }
+    }
+    
+    func didSwipeDown() {
+        let spaceDate = Date()
+        if spaceDate.timeIntervalSince(timeSpaceLastUsed) < 0.5 && !periodJustEntered {
             handlePeriodSpace()
         } else {
-            didSelect(char: " ")
+            handleSpace()
         }
         timeSpaceLastUsed = spaceDate
     }
     
+    func handleSpace() {
+        textDocumentProxy.insertText(" ")
+        if Settings.isAudioEnabled {
+            speakImmediate(word: "space")
+        }
+    }
+    
+    func canDeleteWord() -> Bool {
+        return textDocumentProxy.documentContextBeforeInput?.characters.last! != " "
+    }
+
     func deleteWord() {
         let proxy = self.textDocumentProxy
-        if let lastWord: [String]? = proxy.documentContextBeforeInput?.components(separatedBy: " ") {
-            if let textArray = lastWord {
-                for _ in 0 ..< (textArray.last?.characters.count)! {
-                    proxy.deleteBackward()
-                }
+        if let lastWord = proxy.documentContextBeforeInput?.components(separatedBy: " ") {
+            for _ in 0 ..< (lastWord.last?.characters.count)! {
+                proxy.deleteBackward()
             }
         }
     }
     
     func handlePeriodSpace() {
         textDocumentProxy.deleteBackward()
-        didSelect(char: ".")
-        didSelect(char: " ")
+        textDocumentProxy.insertText(".")
+        textDocumentProxy.insertText(" ")
+        if Settings.isAudioEnabled {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+            speechSynthesizer.speak(periodUtterance)
+            speechSynthesizer.speak(spaceUtterance)
+        }
+        periodJustEntered = true
+    }
+    
+    func speakImmediate(word: String) {
+        speechSynthesizer.stopSpeaking(at: .immediate)
+        speechSynthesizer.speak(AVSpeechUtterance(string: word))
+    }
+    
+    func announceState(state: String) {
+        let wordsArray = state.lowercased().characters.split(separator: " ").map(String.init)
+        if !characterJustSelected && !keyboardJustSwitched {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+        }
+        for word in wordsArray {
+            speechSynthesizer.speak(AVSpeechUtterance(string: word))
+        }
     }
     
     func switchToNextMode() {
@@ -174,5 +216,14 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     override func textDidChange(_ textInput: UITextInput?) {
         currentKeyboard.resetKeys()
+    }
+    
+    func handleStateChange() {
+        if Settings.isAudioEnabled {
+           announceState(state: currentKeyboard.getStateString())
+        }
+        characterJustSelected = false
+        periodJustEntered = false
+        keyboardJustSwitched = false
     }
 }
