@@ -37,14 +37,14 @@ class AlphaKeyboard: DualKeyboard {
         userTyping = true
         if sender == leftTapGestureRecognizer {
             if leftLowerIndex == leftUpperIndex {
-                charSelected(char: charSet[leftLowerIndex])
+                delegate?.didSelect(char: charSet[leftLowerIndex])
                 resetIndexes()
             } else {
                 expandLeftIndexes()
             }
         } else if sender == rightTapGestureRecognizer {
             if rightLowerIndex == rightUpperIndex {
-                charSelected(char: charSet[rightLowerIndex])
+                delegate?.didSelect(char: charSet[rightLowerIndex])
                 resetIndexes()
             } else {
                 expandRightIndexes()
@@ -52,34 +52,17 @@ class AlphaKeyboard: DualKeyboard {
         }
     }
     
-    func createDialog(lowerBound: Int, upperBound: Int) -> [AVSpeechUtterance] {
+    func createStateString(lowerBound: Int, upperBound: Int) -> String {
         if lowerBound == upperBound {
-            return [AVSpeechUtterance(string: "\(charSet[lowerBound])")]
+            return "\(charSet[lowerBound])"
         }
-        return [
-            AVSpeechUtterance(string: "\(charSet[lowerBound])"),
-            AVSpeechUtterance(string: "to"),
-            AVSpeechUtterance(string: "\(charSet[upperBound])")
-            ]
+        return "\(charSet[lowerBound])" + " to " + "\(charSet[upperBound])"
     }
     
-    func speakUtterances(utterances: [AVSpeechUtterance]) {
-        for utterance in utterances {
-            speechSynthesizer?.speak(utterance)
-        }
-    }
-    
-    override func announceState() {
-        if !Settings.isAudioEnabled {
-            return
-        }
-        if !charJustAnnounced {
-            speechSynthesizer?.stopSpeaking(at: .immediate)
-        }
-        let leftUtterances = createDialog(lowerBound: leftLowerIndex, upperBound: leftUpperIndex)
-        let rightUtterances = createDialog(lowerBound: rightLowerIndex, upperBound: rightUpperIndex)
-        speakUtterances(utterances: leftUtterances)
-        speakUtterances(utterances: rightUtterances)
+    override func getStateString() -> String {
+        return createStateString(lowerBound: leftLowerIndex, upperBound: leftUpperIndex) +
+            " " +
+            createStateString(lowerBound: rightLowerIndex, upperBound: rightUpperIndex)
     }
     
     override func resetKeys() {
@@ -132,6 +115,10 @@ class UpperKeyboard: AlphaKeyboard {
         charSet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     }
     
+    override func getName() -> String {
+        return "Uppercase"
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -141,6 +128,10 @@ class LowerKeyboard: AlphaKeyboard {
     override init(frame: CGRect) {
         super.init(frame: frame)
         charSet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    }
+    
+    override func getName() -> String {
+        return "Lowercase"
     }
     
     required init?(coder aDecoder: NSCoder) {

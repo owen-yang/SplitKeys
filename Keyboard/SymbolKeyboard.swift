@@ -43,17 +43,10 @@ class SymbolKeyboard: DualKeyboard {
         }
     }
     
-    override func announceState() {
-        if !Settings.isAudioEnabled {
-            return
-        }
-        if !charJustAnnounced {
-            speechSynthesizer?.stopSpeaking(at: .immediate)
-        }
-        let leftUtterance = AVSpeechUtterance(string: symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])")
-        let rightUtterance = AVSpeechUtterance(string: "\(charSet[symbolIndex])")
-        speechSynthesizer?.speak(leftUtterance)
-        speechSynthesizer?.speak(rightUtterance)
+    override func getStateString() -> String {
+        return (symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])") +
+            " " +
+            "\(charSet[symbolIndex])"
     }
     
     func didSelectSymbol(sender: UILongPressGestureRecognizer) {
@@ -61,10 +54,10 @@ class SymbolKeyboard: DualKeyboard {
         if sender.state == .began {
             if sender == leftlongPressGestureRecognizer {
                 index = symbolIndex > 0 ? (symbolIndex - 1) : charSet.count - 1
-                charSelected(char: charSet[index])
+                delegate?.didSelect(char: charSet[index])
             }
             else if sender == rightlongPressGestureRecognizer {
-                charSelected(char: charSet[symbolIndex])
+                delegate?.didSelect(char: charSet[symbolIndex])
             }
         }
     }
@@ -98,5 +91,9 @@ class SymbolKeyboard: DualKeyboard {
     
     override func isUserTyping() -> Bool {
         return userTyping
+    }
+    
+    override func getName() -> String {
+        return "Symbols"
     }
 }
