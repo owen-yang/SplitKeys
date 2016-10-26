@@ -28,7 +28,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeUpRecognizer = UISwipeGestureRecognizer()
     var periodJustEntered = false
     
-    var timeSpaceLastUsed = NSDate()
+    var timeSpaceLastUsed = Date()
+    var timeBackspaceLastUsed = Date()
     let speechSynthesizer = AVSpeechSynthesizer()
     let spaceUtterance = AVSpeechUtterance(string: "space")
     let periodUtterance = AVSpeechUtterance(string: ".")
@@ -122,15 +123,21 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didSwipeLeft() {
+        let backspaceDate = Date()
         if currentKeyboard.isUserTyping() {
             currentKeyboard.resetKeys()
             handleStateChange()
         } else {
-            handleBackspace()
+            if backspaceDate.timeIntervalSince(timeBackspaceLastUsed) < 0.5 && canDeleteWord() {
+                deleteWord()
+            } else {
+                backspace()
+            }
+            timeBackspaceLastUsed = backspaceDate
         }
     }
     
-    func handleBackspace() {
+    func backspace() {
         textDocumentProxy.deleteBackward()
         if Settings.isAudioEnabled {
             speakImmediate(word: "backspace")
@@ -138,8 +145,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didSwipeDown() {
-        let spaceDate = NSDate()
-        if spaceDate.timeIntervalSince(timeSpaceLastUsed as Date) < 0.5 && !periodJustEntered {
+        let spaceDate = Date()
+        if spaceDate.timeIntervalSince(timeSpaceLastUsed) < 0.5 && !periodJustEntered {
             handlePeriodSpace()
         } else {
             handleSpace()
@@ -151,6 +158,19 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         textDocumentProxy.insertText(" ")
         if Settings.isAudioEnabled {
             speakImmediate(word: "space")
+        }
+    }
+    
+    func canDeleteWord() -> Bool {
+        return textDocumentProxy.documentContextBeforeInput?.characters.last! != " "
+    }
+
+    func deleteWord() {
+        let proxy = self.textDocumentProxy
+        if let lastWord = proxy.documentContextBeforeInput?.components(separatedBy: " ") {
+            for _ in 0 ..< (lastWord.last?.characters.count)! {
+                proxy.deleteBackward()
+            }
         }
     }
     
