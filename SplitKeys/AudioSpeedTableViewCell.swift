@@ -18,12 +18,12 @@ class AudioSpeedTableViewCell: SettingTableViewCell {
         super.init()
                 
         textLabel?.text = "Speed"
-        speedStepper.value = speedToPercent(speed: Settings.audioSpeed)
+        speedStepper.value = Settings.audioSpeed
         setspeedDisplayText()
 
-        speedStepper.minimumValue = 0
-        speedStepper.maximumValue = 200
-        speedStepper.stepValue = 10
+        speedStepper.minimumValue = Double(AVSpeechUtteranceMinimumSpeechRate)
+        speedStepper.maximumValue = Double(AVSpeechUtteranceMaximumSpeechRate)
+        speedStepper.stepValue = 0.05
         speedStepper.addTarget(self, action: #selector(self.didStep), for: .valueChanged)
 
         contentView.addSubview(speedStepper)
@@ -38,19 +38,15 @@ class AudioSpeedTableViewCell: SettingTableViewCell {
     }
     
     func didStep() {
-        Settings.audioSpeed = percentToSpeed(percent: speedStepper.value)
+        Settings.audioSpeed = speedStepper.value
         setspeedDisplayText()
     }
     
     private func setspeedDisplayText() {
-        speedDisplay.text = String(format: "%.0f%%", speedStepper.value)
+        speedDisplay.text = String(format: "%.0f%%", speedToPercent(speedStepper.value))
     }
     
-    private func speedToPercent(speed: Double) -> Double {
-        return (speed - Double(AVSpeechUtteranceDefaultSpeechRate)) * 100 + 100
-    }
-    
-    private func percentToSpeed(percent: Double) -> Double {
-        return percent * Double(AVSpeechUtteranceDefaultSpeechRate) / 100
+    private func speedToPercent(_ speed: Double) -> Double {
+        return speed / Double(AVSpeechUtteranceDefaultSpeechRate) * 100
     }
 }

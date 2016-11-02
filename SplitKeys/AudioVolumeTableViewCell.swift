@@ -17,12 +17,12 @@ class AudioVolumeTableViewCell: SettingTableViewCell {
         super.init()
         
         textLabel?.text = "Volume"
-        volumeStepper.value = Settings.audioVolume * 100
+        volumeStepper.value = Settings.audioVolume
         setVolumeDisplayText()
         
-        volumeStepper.minimumValue = 0
-        volumeStepper.maximumValue = 100
-        volumeStepper.stepValue = 10
+        volumeStepper.minimumValue = 0.0
+        volumeStepper.maximumValue = 1.0
+        volumeStepper.stepValue = 0.10
         volumeStepper.addTarget(self, action: #selector(self.didStep), for: .valueChanged)
         
         contentView.addSubview(volumeStepper)
@@ -37,11 +37,11 @@ class AudioVolumeTableViewCell: SettingTableViewCell {
     }
     
     func didStep() {
-        Settings.audioVolume = volumeStepper.value / 100
+        Settings.audioVolume = volumeStepper.value
         setVolumeDisplayText()
     }
     
     private func setVolumeDisplayText() {
-        volumeDisplay.text = String(format: "%.0f%%", volumeStepper.value)
+        volumeDisplay.text = String(format: "%.0f%%", volumeStepper.value * 100)
     }
 }
