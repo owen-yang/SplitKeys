@@ -15,9 +15,26 @@ class Settings {
         get {
             return userDefaults.bool(forKey: "isAudioEnabled")
         }
-        
         set(enable) {
             userDefaults.set(enable, forKey: "isAudioEnabled")
+        }
+    }
+    
+    static var audioVolume: Double {
+        get {
+            return userDefaults.double(forKey: "audioVolume")
+        }
+        set(audioVolume) {
+            userDefaults.set(audioVolume, forKey: "audioVolume")
+        }
+    }
+    
+    static var audioSpeed: Double {
+        get {
+            return userDefaults.double(forKey: "audioSpeed")
+        }
+        set(audioSpeed) {
+            userDefaults.set(audioSpeed, forKey: "audioSpeed")
         }
     }
 }
