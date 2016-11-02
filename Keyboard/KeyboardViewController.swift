@@ -89,11 +89,14 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         super.viewDidLoad()
         loadKeyboard(upperKeyboard)
 
+        let calculatedHeight = UIScreen.main.bounds.height * 0.5
+        view.addConstraint(NSLayoutConstraint(item:view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: calculatedHeight))
+        
         view.addGestureRecognizer(swipeRightRecognizer)
         view.addGestureRecognizer(swipeDownRecognizer)
         view.addGestureRecognizer(swipeLeftRecognizer)
         view.addGestureRecognizer(swipeUpRecognizer)
-
+        
     }
     
     private func loadKeyboard(_ keyboard: Keyboard) {
