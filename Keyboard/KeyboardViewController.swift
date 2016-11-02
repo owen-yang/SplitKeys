@@ -31,9 +31,9 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     var timeSpaceLastUsed = Date()
     var timeBackspaceLastUsed = Date()
     let speechSynthesizer = AVSpeechSynthesizer()
-    let spaceUtterance = AVSpeechUtterance(string: "space")
-    let periodUtterance = AVSpeechUtterance(string: ".")
-    let backspaceUtterance = AVSpeechUtterance(string: "backspace")
+    var spaceUtterance = AVSpeechUtterance()
+    var periodUtterance = AVSpeechUtterance()
+    var backspaceUtterance = AVSpeechUtterance()
     var characterJustSelected = false
     
     enum Mode {
@@ -60,7 +60,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {        
         currentKeyboard = upperKeyboard
-
+        
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
         upperKeyboard.delegate = self
@@ -79,6 +79,10 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         
         swipeLeftRecognizer.direction = .left
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
+        
+        spaceUtterance = createUtterance(word: "space")
+        periodUtterance = createUtterance(word: ".")
+        backspaceUtterance = createUtterance(word: "backspace")
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -120,7 +124,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         textDocumentProxy.insertText("\(char)")
         if Settings.isAudioEnabled {
             speechSynthesizer.stopSpeaking(at: .immediate)
-            speechSynthesizer.speak(AVSpeechUtterance(string: "\(char)"))
+            speechSynthesizer.speak(createUtterance(word: "\(char)"))
         }
         characterJustSelected = true
     }
@@ -191,7 +195,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     func speakImmediate(word: String) {
         speechSynthesizer.stopSpeaking(at: .immediate)
-        speechSynthesizer.speak(AVSpeechUtterance(string: word))
+        speechSynthesizer.speak(createUtterance(word: word))
     }
     
     func announceState(state: String) {
@@ -200,7 +204,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
             speechSynthesizer.stopSpeaking(at: .immediate)
         }
         for word in wordsArray {
-            speechSynthesizer.speak(AVSpeechUtterance(string: word))
+            speechSynthesizer.speak(createUtterance(word: word))
         }
     }
     
@@ -215,6 +219,13 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         case .symbol:
             mode = .upper
         }
+    }
+    
+    func createUtterance(word: String) -> AVSpeechUtterance {
+        let result = AVSpeechUtterance(string: word)
+        result.rate = Float(Settings.audioSpeed)
+        result.volume = Float(Settings.audioVolume)
+        return result
     }
     
     override func textDidChange(_ textInput: UITextInput?) {

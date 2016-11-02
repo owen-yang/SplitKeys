@@ -56,7 +56,7 @@ class AlphaKeyboard: DualKeyboard {
         if lowerBound == upperBound {
             return "\(charSet[lowerBound])"
         }
-        return "\(charSet[lowerBound])" + " to " + "\(charSet[upperBound])"
+        return "\(charSet[lowerBound])" + " through " + "\(charSet[upperBound])"
     }
     
     override func getStateString() -> String {
