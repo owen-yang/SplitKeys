@@ -10,8 +10,11 @@
 		A82945B31DA40AC90006FC21 /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B21DA40AC90006FC21 /* Keyboard.swift */; };
 		A82945B51DA40D6B0006FC21 /* DualKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */; };
 		A82945B91DA437230006FC21 /* SingleKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B81DA437230006FC21 /* SingleKeyboard.swift */; };
+		A86C45BB1DC67CB20077542C /* AudioVolumeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C45BA1DC67CB20077542C /* AudioVolumeTableViewCell.swift */; };
+		A86C45BD1DC67D1A0077542C /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C45BC1DC67D1A0077542C /* SettingTableViewCell.swift */; };
 		A86EE0B31DA569E50023AE9B /* AlphaKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */; };
 		A871ED6A1DB724B800642B51 /* NumeralKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A871ED691DB724B800642B51 /* NumeralKeyboard.swift */; };
+		A89DFAD81DCA4F2000463D64 /* AudioSpeedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89DFAD71DCA4F2000463D64 /* AudioSpeedTableViewCell.swift */; };
 		A8A260CF1DB1405A000A813F /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55181DB029CA0043A87C /* Settings.swift */; };
 		A8AB55151DB022DD0043A87C /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55141DB022DD0043A87C /* SettingsTableViewController.swift */; };
 		A8AB55171DB024300043A87C /* AudioToggleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AB55161DB024300043A87C /* AudioToggleTableViewCell.swift */; };
@@ -52,8 +55,11 @@
 		A82945B21DA40AC90006FC21 /* Keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
 		A82945B41DA40D6B0006FC21 /* DualKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DualKeyboard.swift; sourceTree = "<group>"; };
 		A82945B81DA437230006FC21 /* SingleKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleKeyboard.swift; sourceTree = "<group>"; };
+		A86C45BA1DC67CB20077542C /* AudioVolumeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioVolumeTableViewCell.swift; sourceTree = "<group>"; };
+		A86C45BC1DC67D1A0077542C /* SettingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
 		A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlphaKeyboard.swift; sourceTree = "<group>"; };
 		A871ED691DB724B800642B51 /* NumeralKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumeralKeyboard.swift; sourceTree = "<group>"; };
+		A89DFAD71DCA4F2000463D64 /* AudioSpeedTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioSpeedTableViewCell.swift; sourceTree = "<group>"; };
 		A8A260CD1DB13CE0000A813F /* SplitKeys.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SplitKeys.entitlements; sourceTree = "<group>"; };
 		A8A260CE1DB13EC4000A813F /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Keyboard.entitlements; sourceTree = "<group>"; };
 		A8AB55141DB022DD0043A87C /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
@@ -88,10 +94,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A89DFAD61DCA4E5600463D64 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				A89DFAD71DCA4F2000463D64 /* AudioSpeedTableViewCell.swift */,
+				A8AB55161DB024300043A87C /* AudioToggleTableViewCell.swift */,
+				A86C45BA1DC67CB20077542C /* AudioVolumeTableViewCell.swift */,
+			);
+			name = Audio;
+			sourceTree = "<group>";
+		};
+		A89DFADB1DCA56B500463D64 /* Keyboard */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Keyboard;
+			sourceTree = "<group>";
+		};
 		A8A260D01DB14168000A813F /* Settings Cells */ = {
 			isa = PBXGroup;
 			children = (
-				A8AB55161DB024300043A87C /* AudioToggleTableViewCell.swift */,
+				A86C45BC1DC67D1A0077542C /* SettingTableViewCell.swift */,
+				A89DFAD61DCA4E5600463D64 /* Audio */,
+				A89DFADB1DCA56B500463D64 /* Keyboard */,
 			);
 			name = "Settings Cells";
 			sourceTree = "<group>";
@@ -191,7 +216,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = SplitKeys;
 				TargetAttributes = {
 					A8D03AFA1D9C29AF00121139 = {
@@ -259,8 +284,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A86C45BD1DC67D1A0077542C /* SettingTableViewCell.swift in Sources */,
 				A8AB55171DB024300043A87C /* AudioToggleTableViewCell.swift in Sources */,
 				A8AB55151DB022DD0043A87C /* SettingsTableViewController.swift in Sources */,
+				A86C45BB1DC67CB20077542C /* AudioVolumeTableViewCell.swift in Sources */,
+				A89DFAD81DCA4F2000463D64 /* AudioSpeedTableViewCell.swift in Sources */,
 				A8AB55191DB029CA0043A87C /* Settings.swift in Sources */,
 				A8D03AFF1D9C29AF00121139 /* AppDelegate.swift in Sources */,
 			);
@@ -321,6 +349,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -372,6 +401,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

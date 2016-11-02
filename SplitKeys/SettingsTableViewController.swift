@@ -12,8 +12,18 @@ class SettingsTableViewController: UITableViewController {
     
     let cells = [
         [
-            AudioToggleTableViewCell()
+            AudioToggleTableViewCell(),
+            AudioVolumeTableViewCell(),
+            AudioSpeedTableViewCell()
+        ],
+        [
+//            KeyboardHoldTimeTableViewCell()
         ]
+    ]
+    
+    let titles = [
+        "AUDIO",
+        "KEYBOARD"
     ]
     
     override func viewDidLoad() {
@@ -31,5 +41,9 @@ class SettingsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return cells[indexPath.section][indexPath.row]
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return titles[section]
     }
 }
