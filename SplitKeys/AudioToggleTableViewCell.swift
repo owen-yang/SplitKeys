@@ -8,17 +8,12 @@
 
 import UIKit
 
-class AudioToggleTableViewCell: UITableViewCell {
+class AudioToggleTableViewCell: SettingTableViewCell {
     
     let audioSwitch = UISwitch()
     
-    convenience init() {
-        self.init(style: .default, reuseIdentifier: nil)
-    }
-    
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .none
+    override init() {
+        super.init()
         
         textLabel?.text = "Enable Audio"
         audioSwitch.isOn = Settings.isAudioEnabled
@@ -28,10 +23,6 @@ class AudioToggleTableViewCell: UITableViewCell {
         audioSwitch.translatesAutoresizingMaskIntoConstraints = false
         contentView.addConstraint(NSLayoutConstraint(item: audioSwitch, attribute: .right, relatedBy: .equal, toItem: contentView, attribute: .right, multiplier: 1, constant: -8))
         contentView.addConstraint(NSLayoutConstraint(item: audioSwitch, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0))
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     func didToggle() {
