@@ -26,6 +26,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeRightRecognizer = UISwipeGestureRecognizer()
     let swipeLeftRecognizer = UISwipeGestureRecognizer()
     let swipeUpRecognizer = UISwipeGestureRecognizer()
+    let doubleSwipeDownRecognizer = UISwipeGestureRecognizer()
     var periodJustEntered = false
     
     var timeSpaceLastUsed = Date()
@@ -77,6 +78,10 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         swipeDownRecognizer.direction = .down
         swipeDownRecognizer.addTarget(self, action: #selector(self.didSwipeDown))
         
+        doubleSwipeDownRecognizer.direction = .down
+        doubleSwipeDownRecognizer.numberOfTouchesRequired = 2
+        doubleSwipeDownRecognizer.addTarget(self, action: #selector(self.dismissKeyboard))
+        
         swipeLeftRecognizer.direction = .left
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
         
@@ -100,6 +105,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addGestureRecognizer(swipeDownRecognizer)
         view.addGestureRecognizer(swipeLeftRecognizer)
         view.addGestureRecognizer(swipeUpRecognizer)
+        view.addGestureRecognizer(doubleSwipeDownRecognizer)
         
     }
     
