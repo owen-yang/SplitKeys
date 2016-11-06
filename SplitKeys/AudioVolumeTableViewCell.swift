@@ -22,12 +22,11 @@ class AudioVolumeTableViewCell: StepperSettingTableViewCell {
         valueStepper.stepValue = 0.10
     }
 
-    override func didStep() {
-        super.didStep()
+    override func onStep() {
         Settings.audioVolume = valueStepper.value
     }
 
-    override func setValueDisplayText() {
-        valueDisplay.text = String(format: "%.0f%%", valueStepper.value * 100)
+    override func getValueDisplayText() -> String {
+        return String(format: "%.0f%%", valueStepper.value * 100)
     }
 }

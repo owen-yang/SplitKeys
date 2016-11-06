@@ -22,12 +22,11 @@ class KeyboardWaitTimeTableViewCell: StepperSettingTableViewCell {
         valueStepper.stepValue = 0.50
     }
 
-    override func didStep() {
-        super.didStep()
+    override func onStep() {
         Settings.waitTime = valueStepper.value
     }
-
-    override func setValueDisplayText() {
-        valueDisplay.text = String(format: "%.2f sec", valueStepper.value)
+    
+    override func getValueDisplayText() -> String {
+        return String(format: "%.2f sec", valueStepper.value)
     }
 }

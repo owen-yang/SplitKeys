@@ -16,7 +16,7 @@ class StepperSettingTableViewCell: SettingTableViewCell {
         super.init()
 
         initStepperValues()
-        setValueDisplayText()
+        valueDisplay.text = getValueDisplayText()
         valueStepper.addTarget(self, action: #selector(self.didStep), for: .valueChanged)
 
         contentView.addSubview(valueStepper)
@@ -33,12 +33,17 @@ class StepperSettingTableViewCell: SettingTableViewCell {
     func initStepperValues() {
         fatalError("initStepperValues() has not been implemented")
     }
-
-    func didStep() {
-        setValueDisplayText()
+    
+    final func didStep() {
+        valueDisplay.text = getValueDisplayText()
+        onStep()
+    }
+    
+    func onStep() {
+        // Do nothing; subclasses may override
     }
 
-    func setValueDisplayText() {
-        fatalError("setValueDisplayText() has not been implemented")
+    func getValueDisplayText() -> String {
+        fatalError("getValueDisplayText() has not been implemented")
     }
 }
