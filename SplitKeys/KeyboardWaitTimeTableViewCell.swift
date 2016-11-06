@@ -17,9 +17,9 @@ class KeyboardWaitTimeTableViewCell: StepperSettingTableViewCell {
 
     override func initStepperValues() {
         valueStepper.value = Settings.waitTime
-        valueStepper.minimumValue = 0.50
+        valueStepper.minimumValue = 0.25
         valueStepper.maximumValue = 4.0
-        valueStepper.stepValue = 0.50
+        valueStepper.stepValue = 0.25
     }
 
     override func onStep() {

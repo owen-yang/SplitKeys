@@ -18,7 +18,7 @@ class KeyboardHoldTimeTableViewCell: StepperSettingTableViewCell {
     override func initStepperValues() {
         valueStepper.value = Settings.holdTime
         valueStepper.minimumValue = 0.25
-        valueStepper.maximumValue = 2.0
+        valueStepper.maximumValue = 4.0
         valueStepper.stepValue = 0.25
     }
 
