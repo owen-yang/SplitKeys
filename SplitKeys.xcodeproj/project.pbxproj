@@ -14,6 +14,7 @@
 		A854FBD01DCFC76400755BAC /* KeyboardHeightTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A854FBCF1DCFC76400755BAC /* KeyboardHeightTableViewCell.swift */; };
 		A854FBD21DD0049100755BAC /* AutocorrectToggleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A854FBD11DD0049100755BAC /* AutocorrectToggleTableViewCell.swift */; };
 		A854FBD41DD004C300755BAC /* SwitchSettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A854FBD31DD004C300755BAC /* SwitchSettingTableViewCell.swift */; };
+		A854FBD71DD01EA000755BAC /* ContrastBarSizeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A854FBD61DD01EA000755BAC /* ContrastBarSizeTableViewCell.swift */; };
 		A86C45BB1DC67CB20077542C /* AudioVolumeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C45BA1DC67CB20077542C /* AudioVolumeTableViewCell.swift */; };
 		A86C45BD1DC67D1A0077542C /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C45BC1DC67D1A0077542C /* SettingTableViewCell.swift */; };
 		A86EE0B31DA569E50023AE9B /* AlphaKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */; };
@@ -65,6 +66,7 @@
 		A854FBCF1DCFC76400755BAC /* KeyboardHeightTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardHeightTableViewCell.swift; sourceTree = "<group>"; };
 		A854FBD11DD0049100755BAC /* AutocorrectToggleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutocorrectToggleTableViewCell.swift; sourceTree = "<group>"; };
 		A854FBD31DD004C300755BAC /* SwitchSettingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchSettingTableViewCell.swift; sourceTree = "<group>"; };
+		A854FBD61DD01EA000755BAC /* ContrastBarSizeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContrastBarSizeTableViewCell.swift; sourceTree = "<group>"; };
 		A86C45BA1DC67CB20077542C /* AudioVolumeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioVolumeTableViewCell.swift; sourceTree = "<group>"; };
 		A86C45BC1DC67D1A0077542C /* SettingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
 		A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlphaKeyboard.swift; sourceTree = "<group>"; };
@@ -114,6 +116,14 @@
 			name = Autocorrect;
 			sourceTree = "<group>";
 		};
+		A854FBD81DD01EA300755BAC /* ContrastBar */ = {
+			isa = PBXGroup;
+			children = (
+				A854FBD61DD01EA000755BAC /* ContrastBarSizeTableViewCell.swift */,
+			);
+			name = ContrastBar;
+			sourceTree = "<group>";
+		};
 		A89DFAD61DCA4E5600463D64 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
@@ -142,6 +152,7 @@
 				A854FBD31DD004C300755BAC /* SwitchSettingTableViewCell.swift */,
 				A89DFAD61DCA4E5600463D64 /* Audio */,
 				A89DFADB1DCA56B500463D64 /* Keyboard */,
+				A854FBD81DD01EA300755BAC /* ContrastBar */,
 				A854FBD51DD005E400755BAC /* Autocorrect */,
 			);
 			name = "Settings Cells";
@@ -322,6 +333,7 @@
 				A8AB55191DB029CA0043A87C /* Settings.swift in Sources */,
 				A854FBD41DD004C300755BAC /* SwitchSettingTableViewCell.swift in Sources */,
 				A8D03AFF1D9C29AF00121139 /* AppDelegate.swift in Sources */,
+				A854FBD71DD01EA000755BAC /* ContrastBarSizeTableViewCell.swift in Sources */,
 				A854FBD21DD0049100755BAC /* AutocorrectToggleTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

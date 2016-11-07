@@ -17,8 +17,9 @@ class SwitchSettingTableViewCell: SettingTableViewCell {
 
         initSwitchValue()
 
-        contentView.addSubview(valueSwitch)
         valueSwitch.addTarget(self, action: #selector(self.onToggle), for: .valueChanged)
+        
+        contentView.addSubview(valueSwitch)
         valueSwitch.translatesAutoresizingMaskIntoConstraints = false
         contentView.addConstraint(NSLayoutConstraint(item: valueSwitch, attribute: .right, relatedBy: .equal, toItem: contentView, attribute: .right, multiplier: 1, constant: -8))
         contentView.addConstraint(NSLayoutConstraint(item: valueSwitch, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0))
