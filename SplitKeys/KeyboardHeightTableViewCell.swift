@@ -1,29 +1,29 @@
 //
-//  AudioVolumeTableViewCell.swift
+//  KeyboardHeightTableViewCell.swift
 //  SplitKeys
 //
-//  Created by Owen Yang on 10/30/16.
+//  Created by Owen Yang on 11/6/16.
 //  Copyright © 2016 SplitKeys. All rights reserved.
 //
 
 import UIKit
 
-class AudioVolumeTableViewCell: StepperSettingTableViewCell {
+class KeyboardHeightTableViewCell: StepperSettingTableViewCell {
 
     override init() {
         super.init()
-        textLabel?.text = "Volume"
+        textLabel?.text = "Keyboard Height"
     }
 
     override func initStepperValues() {
-        valueStepper.value = Settings.audioVolume
-        valueStepper.minimumValue = 0.0
-        valueStepper.maximumValue = 1.0
+        valueStepper.value = Settings.heightProportion
+        valueStepper.minimumValue = 0.20
+        valueStepper.maximumValue = 0.80
         valueStepper.stepValue = 0.10
     }
 
     override func onStep() {
-        Settings.audioVolume = valueStepper.value
+        Settings.heightProportion = valueStepper.value
     }
 
     override func getValueDisplayText() -> String {
