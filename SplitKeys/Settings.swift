@@ -20,6 +20,7 @@ class Settings {
         static let heightProportion = 0.2
         static let holdTime = 0.5
         static let waitTime = 1.0
+        static let isAutocorrectEnabled = true
     }
 
     static var isAudioEnabled: Bool {
@@ -73,6 +74,15 @@ class Settings {
         }
         set (waitTime) {
             userDefaults.set(waitTime, forKey: "waitTime")
+        }
+    }
+    
+    static var isAutocorrectEnabled: Bool {
+        get {
+            return userDefaults.object(forKey: "isAutocorrectEnabled") as! Bool? ?? Defaults.isAutocorrectEnabled
+        }
+        set(enable) {
+            userDefaults.set(enable, forKey: "isAutocorrectEnabled")
         }
     }
 }

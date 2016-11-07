@@ -32,6 +32,11 @@ class SettingsTableViewController: UITableViewController {
             header: "",
             cells: [KeyboardWaitTimeTableViewCell()],
             footer: "Minimum wait time before the numeral keyboard enters the selected numeral."
+        ),
+        (
+            header: "AUTOCORRECT",
+            cells: [AutocorrectToggleTableViewCell()],
+            footer: ""
         )
     ]
     

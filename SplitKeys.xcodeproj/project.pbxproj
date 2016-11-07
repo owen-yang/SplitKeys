@@ -12,6 +12,8 @@
 		A82945B91DA437230006FC21 /* SingleKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82945B81DA437230006FC21 /* SingleKeyboard.swift */; };
 		A854FBCE1DCFC56F00755BAC /* KeyboardWaitTimeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A854FBCD1DCFC56F00755BAC /* KeyboardWaitTimeTableViewCell.swift */; };
 		A854FBD01DCFC76400755BAC /* KeyboardHeightTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A854FBCF1DCFC76400755BAC /* KeyboardHeightTableViewCell.swift */; };
+		A854FBD21DD0049100755BAC /* AutocorrectToggleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A854FBD11DD0049100755BAC /* AutocorrectToggleTableViewCell.swift */; };
+		A854FBD41DD004C300755BAC /* SwitchSettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A854FBD31DD004C300755BAC /* SwitchSettingTableViewCell.swift */; };
 		A86C45BB1DC67CB20077542C /* AudioVolumeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C45BA1DC67CB20077542C /* AudioVolumeTableViewCell.swift */; };
 		A86C45BD1DC67D1A0077542C /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86C45BC1DC67D1A0077542C /* SettingTableViewCell.swift */; };
 		A86EE0B31DA569E50023AE9B /* AlphaKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */; };
@@ -61,6 +63,8 @@
 		A82945B81DA437230006FC21 /* SingleKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleKeyboard.swift; sourceTree = "<group>"; };
 		A854FBCD1DCFC56F00755BAC /* KeyboardWaitTimeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardWaitTimeTableViewCell.swift; sourceTree = "<group>"; };
 		A854FBCF1DCFC76400755BAC /* KeyboardHeightTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardHeightTableViewCell.swift; sourceTree = "<group>"; };
+		A854FBD11DD0049100755BAC /* AutocorrectToggleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutocorrectToggleTableViewCell.swift; sourceTree = "<group>"; };
+		A854FBD31DD004C300755BAC /* SwitchSettingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchSettingTableViewCell.swift; sourceTree = "<group>"; };
 		A86C45BA1DC67CB20077542C /* AudioVolumeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioVolumeTableViewCell.swift; sourceTree = "<group>"; };
 		A86C45BC1DC67D1A0077542C /* SettingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
 		A86EE0B21DA569E50023AE9B /* AlphaKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlphaKeyboard.swift; sourceTree = "<group>"; };
@@ -102,6 +106,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A854FBD51DD005E400755BAC /* Autocorrect */ = {
+			isa = PBXGroup;
+			children = (
+				A854FBD11DD0049100755BAC /* AutocorrectToggleTableViewCell.swift */,
+			);
+			name = Autocorrect;
+			sourceTree = "<group>";
+		};
 		A89DFAD61DCA4E5600463D64 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
@@ -127,8 +139,10 @@
 			children = (
 				A86C45BC1DC67D1A0077542C /* SettingTableViewCell.swift */,
 				A8ADF2381DCFB5D40088DB0C /* StepperSettingTableViewCell.swift */,
+				A854FBD31DD004C300755BAC /* SwitchSettingTableViewCell.swift */,
 				A89DFAD61DCA4E5600463D64 /* Audio */,
 				A89DFADB1DCA56B500463D64 /* Keyboard */,
+				A854FBD51DD005E400755BAC /* Autocorrect */,
 			);
 			name = "Settings Cells";
 			sourceTree = "<group>";
@@ -306,7 +320,9 @@
 				A86C45BB1DC67CB20077542C /* AudioVolumeTableViewCell.swift in Sources */,
 				A89DFAD81DCA4F2000463D64 /* AudioSpeedTableViewCell.swift in Sources */,
 				A8AB55191DB029CA0043A87C /* Settings.swift in Sources */,
+				A854FBD41DD004C300755BAC /* SwitchSettingTableViewCell.swift in Sources */,
 				A8D03AFF1D9C29AF00121139 /* AppDelegate.swift in Sources */,
+				A854FBD21DD0049100755BAC /* AutocorrectToggleTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
