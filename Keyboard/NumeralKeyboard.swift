@@ -26,10 +26,6 @@ class NumeralKeyboard: SingleKeyboard {
         longPressGestureRecognizer.addTarget(self, action: #selector(self.didLongPress(sender:)))
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func handleButtonTap(sender: UITapGestureRecognizer) {
         timer?.invalidate()
         timer = Timer.scheduledTimer(timeInterval: waitInterval, target: self, selector: #selector(self.didSelectNumeral), userInfo: nil, repeats: false)

@@ -17,7 +17,7 @@ class KeyboardHeightTableViewCell: StepperSettingTableViewCell {
 
     override func initStepperValues() {
         valueStepper.value = Settings.heightProportion
-        valueStepper.minimumValue = 0.20
+        valueStepper.minimumValue = 0.40
         valueStepper.maximumValue = 0.80
         valueStepper.stepValue = 0.10
     }

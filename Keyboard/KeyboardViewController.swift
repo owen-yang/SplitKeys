@@ -32,10 +32,9 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     var timeSpaceLastUsed = Date()
     var timeBackspaceLastUsed = Date()
     let speechSynthesizer = AVSpeechSynthesizer()
-    let spaceUtterance = AVSpeechUtterance(string: "space")
-    let periodUtterance = AVSpeechUtterance(string: ".")
-    let backspaceUtterance = AVSpeechUtterance(string: "backspace")
     var characterJustSelected = false
+
+    let contrastBar = UIView()
     
     enum Mode {
         case upper
@@ -61,7 +60,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {        
         currentKeyboard = upperKeyboard
-
+        
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
         upperKeyboard.delegate = self
@@ -86,7 +85,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    convenience required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -94,7 +93,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         super.viewDidLoad()
         loadKeyboard(upperKeyboard)
 
-        let calculatedHeight = UIScreen.main.bounds.height * 0.5
+        let calculatedHeight = UIScreen.main.bounds.height * CGFloat(Settings.heightProportion)
         view.addConstraint(NSLayoutConstraint(item:view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: calculatedHeight))
         
         view.addGestureRecognizer(swipeRightRecognizer)
@@ -102,19 +101,29 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addGestureRecognizer(swipeLeftRecognizer)
         view.addGestureRecognizer(swipeUpRecognizer)
         view.addGestureRecognizer(doubleSwipeDownRecognizer)
-        
     }
     
     private func loadKeyboard(_ keyboard: Keyboard) {
         currentKeyboard.removeFromSuperview()
         currentKeyboard = keyboard
         keyboard.resetKeys()
+        
         view.addSubview(keyboard)
         keyboard.translatesAutoresizingMaskIntoConstraints = false
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
+        
+        view.addSubview(contrastBar)
+        contrastBar.backgroundColor = .black
+        contrastBar.isUserInteractionEnabled = false
+        contrastBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: CGFloat(Settings.contrastBarSize)))
+        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
+        
         if Settings.isAudioEnabled {
             speakImmediate(word: currentKeyboard.getName())
         }
@@ -126,7 +135,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         textDocumentProxy.insertText("\(char)")
         if Settings.isAudioEnabled {
             speechSynthesizer.stopSpeaking(at: .immediate)
-            speechSynthesizer.speak(AVSpeechUtterance(string: "\(char)"))
+            speechSynthesizer.speak(createUtterance(word: "\(char)"))
         }
         characterJustSelected = true
     }
@@ -189,15 +198,15 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         textDocumentProxy.insertText(" ")
         if Settings.isAudioEnabled {
             speechSynthesizer.stopSpeaking(at: .immediate)
-            speechSynthesizer.speak(periodUtterance)
-            speechSynthesizer.speak(spaceUtterance)
+            speechSynthesizer.speak(createUtterance(word: "."))
+            speechSynthesizer.speak(createUtterance(word: "space"))
         }
         periodJustEntered = true
     }
     
     func speakImmediate(word: String) {
         speechSynthesizer.stopSpeaking(at: .immediate)
-        speechSynthesizer.speak(AVSpeechUtterance(string: word))
+        speechSynthesizer.speak(createUtterance(word: word))
     }
     
     func announceState(state: String) {
@@ -206,7 +215,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
             speechSynthesizer.stopSpeaking(at: .immediate)
         }
         for word in wordsArray {
-            speechSynthesizer.speak(AVSpeechUtterance(string: word))
+            speechSynthesizer.speak(createUtterance(word: word))
         }
     }
     
@@ -221,6 +230,13 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         case .symbol:
             mode = .upper
         }
+    }
+    
+    func createUtterance(word: String) -> AVSpeechUtterance {
+        let result = AVSpeechUtterance(string: word)
+        result.rate = Float(Settings.audioSpeed)
+        result.volume = Float(Settings.audioVolume)
+        return result
     }
     
     override func textDidChange(_ textInput: UITextInput?) {
