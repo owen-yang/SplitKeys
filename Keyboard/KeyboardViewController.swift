@@ -33,9 +33,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     var timeBackspaceLastUsed = Date()
     let speechSynthesizer = AVSpeechSynthesizer()
     var characterJustSelected = false
-    
-    let mContrastBarSize = 50.0
-    var contrastBarSize: Double {get {return mContrastBarSize}}
+
     let contrastBar = UIView()
     
     enum Mode {
@@ -110,22 +108,23 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         currentKeyboard.removeFromSuperview()
         currentKeyboard = keyboard
         keyboard.resetKeys()
+        
         view.addSubview(keyboard)
         keyboard.translatesAutoresizingMaskIntoConstraints = false
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
-        let contrastBarTranslation = CGFloat(contrastBarSize)
-        //contrast bar
+        
         view.addSubview(contrastBar)
         contrastBar.backgroundColor = .black
-        contrastBar.translatesAutoresizingMaskIntoConstraints = false
         contrastBar.isUserInteractionEnabled = false
+        contrastBar.translatesAutoresizingMaskIntoConstraints = false
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: contrastBarTranslation))
+        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: CGFloat(Settings.contrastBarSize)))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
+        
         if Settings.isAudioEnabled {
             speakImmediate(word: currentKeyboard.getName())
         }

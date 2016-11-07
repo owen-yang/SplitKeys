@@ -33,6 +33,10 @@ class Keyboard: UIView {
         handleButtonTap(sender: sender)
         delegate?.handleStateChange()
     }
+    
+    convenience required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 protocol KeyboardDelegate {

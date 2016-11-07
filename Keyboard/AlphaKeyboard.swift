@@ -29,10 +29,6 @@ class AlphaKeyboard: DualKeyboard {
         rightTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func handleButtonTap(sender: UITapGestureRecognizer) {
         userTyping = true
         if sender == leftTapGestureRecognizer {
@@ -118,10 +114,6 @@ class UpperKeyboard: AlphaKeyboard {
     override func getName() -> String {
         return "Uppercase"
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
 
 class LowerKeyboard: AlphaKeyboard {
@@ -132,9 +124,5 @@ class LowerKeyboard: AlphaKeyboard {
     
     override func getName() -> String {
         return "Lowercase"
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
