@@ -9,6 +9,12 @@
 import Foundation
 import AVFoundation
 
+enum ContrastBarSize: Double {
+    case small = 20.0
+    case medium = 35.0
+    case large = 50.0
+}
+
 class Settings {
 
     static private let userDefaults = UserDefaults(suiteName: "group.SplitKeys")!
@@ -21,6 +27,7 @@ class Settings {
         static let holdTime = 0.5
         static let waitTime = 1.0
         static let isAutocorrectEnabled = true
+        static let contrastBarSize = ContrastBarSize.medium.rawValue
     }
 
     static var isAudioEnabled: Bool {
@@ -74,6 +81,15 @@ class Settings {
         }
         set (waitTime) {
             userDefaults.set(waitTime, forKey: "waitTime")
+        }
+    }
+    
+    static var contrastBarSize: Double {
+        get {
+            return userDefaults.object(forKey: "contrastBarSize") as! Double? ?? Defaults.contrastBarSize
+        }
+        set (contrastBarSize) {
+            userDefaults.set(contrastBarSize, forKey: "contrastBarSize")
         }
     }
     
