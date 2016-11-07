@@ -85,7 +85,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    convenience required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -101,7 +101,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addGestureRecognizer(swipeLeftRecognizer)
         view.addGestureRecognizer(swipeUpRecognizer)
         view.addGestureRecognizer(doubleSwipeDownRecognizer)
-        
     }
     
     private func loadKeyboard(_ keyboard: Keyboard) {

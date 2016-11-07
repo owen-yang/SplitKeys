@@ -59,21 +59,20 @@ class DualKeyboard: Keyboard {
         addConstraint(NSLayoutConstraint(item: rightButton, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0))
         addConstraint(NSLayoutConstraint(item: rightButton, attribute: .right, relatedBy: .equal, toItem: self, attribute: .right, multiplier: 1, constant: 0))
         
-        // account for contrast bar
-        let textTranslation = CGFloat(50 / 2)
+        let labelOffset = CGFloat(Settings.contrastBarSize / 2)
         
         // leftLabel
         leftButton.addSubview(leftLabel)
         leftLabel.font = defaultLabelFont
         leftLabel.translatesAutoresizingMaskIntoConstraints = false
         leftButton.addConstraint(NSLayoutConstraint(item: leftLabel, attribute: .centerX, relatedBy: .equal, toItem: leftButton, attribute: .centerX, multiplier: 1, constant: 0))
-        leftButton.addConstraint(NSLayoutConstraint(item: leftLabel, attribute: .centerY, relatedBy: .equal, toItem: leftButton, attribute: .centerY, multiplier: 1, constant: textTranslation))
+        leftButton.addConstraint(NSLayoutConstraint(item: leftLabel, attribute: .centerY, relatedBy: .equal, toItem: leftButton, attribute: .centerY, multiplier: 1, constant: labelOffset))
         
         // rightLabel
         rightButton.addSubview(rightLabel)
         rightLabel.font = defaultLabelFont
         rightLabel.translatesAutoresizingMaskIntoConstraints = false
         rightButton.addConstraint(NSLayoutConstraint(item: rightLabel, attribute: .centerX, relatedBy: .equal, toItem: rightButton, attribute: .centerX, multiplier: 1, constant: 0))
-        rightButton.addConstraint(NSLayoutConstraint(item: rightLabel, attribute: .centerY, relatedBy: .equal, toItem: rightButton, attribute: .centerY, multiplier: 1, constant: textTranslation))
+        rightButton.addConstraint(NSLayoutConstraint(item: rightLabel, attribute: .centerY, relatedBy: .equal, toItem: rightButton, attribute: .centerY, multiplier: 1, constant: labelOffset))
     }
 }
