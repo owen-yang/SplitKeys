@@ -60,7 +60,7 @@ class DualKeyboard: Keyboard {
         addConstraint(NSLayoutConstraint(item: rightButton, attribute: .right, relatedBy: .equal, toItem: self, attribute: .right, multiplier: 1, constant: 0))
         
         // account for contrast bar
-        let textTranslation = CGFloat(contrastBarSize / 2)
+        let textTranslation = CGFloat(50 / 2)
         
         // leftLabel
         leftButton.addSubview(leftLabel)
@@ -75,8 +75,6 @@ class DualKeyboard: Keyboard {
         rightLabel.translatesAutoresizingMaskIntoConstraints = false
         rightButton.addConstraint(NSLayoutConstraint(item: rightLabel, attribute: .centerX, relatedBy: .equal, toItem: rightButton, attribute: .centerX, multiplier: 1, constant: 0))
         rightButton.addConstraint(NSLayoutConstraint(item: rightLabel, attribute: .centerY, relatedBy: .equal, toItem: rightButton, attribute: .centerY, multiplier: 1, constant: textTranslation))
-        
-        addContrastBar(views: [leftButton, rightButton])
     }
     
     required init?(coder aDecoder: NSCoder) {

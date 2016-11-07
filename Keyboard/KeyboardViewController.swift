@@ -32,10 +32,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     var timeSpaceLastUsed = Date()
     var timeBackspaceLastUsed = Date()
     let speechSynthesizer = AVSpeechSynthesizer()
-    var spaceUtterance = AVSpeechUtterance()
-    var periodUtterance = AVSpeechUtterance()
-    var backspaceUtterance = AVSpeechUtterance()
     var characterJustSelected = false
+    
+    let mContrastBarSize = 50.0
+    var contrastBarSize: Double {get {return mContrastBarSize}}
+    let contrastBar = UIView()
     
     enum Mode {
         case upper
@@ -84,10 +85,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         
         swipeLeftRecognizer.direction = .left
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
-        
-        spaceUtterance = createUtterance(word: "space")
-        periodUtterance = createUtterance(word: ".")
-        backspaceUtterance = createUtterance(word: "backspace")
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -98,7 +95,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         super.viewDidLoad()
         loadKeyboard(upperKeyboard)
 
-        let calculatedHeight = UIScreen.main.bounds.height * 0.5
+        let calculatedHeight = UIScreen.main.bounds.height * CGFloat(Settings.heightProportion)
         view.addConstraint(NSLayoutConstraint(item:view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: calculatedHeight))
         
         view.addGestureRecognizer(swipeRightRecognizer)
@@ -119,6 +116,16 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: keyboard, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0))
+        let contrastBarTranslation = CGFloat(contrastBarSize)
+        //contrast bar
+        view.addSubview(contrastBar)
+        contrastBar.backgroundColor = .black
+        contrastBar.translatesAutoresizingMaskIntoConstraints = false
+        contrastBar.isUserInteractionEnabled = false
+        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: contrastBarTranslation))
+        view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
         if Settings.isAudioEnabled {
             speakImmediate(word: currentKeyboard.getName())
         }
@@ -193,8 +200,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         textDocumentProxy.insertText(" ")
         if Settings.isAudioEnabled {
             speechSynthesizer.stopSpeaking(at: .immediate)
-            speechSynthesizer.speak(periodUtterance)
-            speechSynthesizer.speak(spaceUtterance)
+            speechSynthesizer.speak(createUtterance(word: "."))
+            speechSynthesizer.speak(createUtterance(word: "space"))
         }
         periodJustEntered = true
     }
