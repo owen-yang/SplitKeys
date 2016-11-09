@@ -32,6 +32,9 @@ class DualKeyboard: Keyboard {
         leftTapGestureRecognizer.addTarget(self, action: #selector(didTapButton(sender:)))
         rightTapGestureRecognizer.addTarget(self, action: #selector(didTapButton(sender:)))
         
+        leftlongPressGestureRecognizer.minimumPressDuration = Settings.holdTime
+        rightlongPressGestureRecognizer.minimumPressDuration = Settings.holdTime
+        
         // divider
         addSubview(divider)
         divider.translatesAutoresizingMaskIntoConstraints = false
