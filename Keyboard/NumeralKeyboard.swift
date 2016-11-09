@@ -17,7 +17,7 @@ class NumeralKeyboard: SingleKeyboard {
     }
     
     private var timer: Timer?
-    private let waitInterval = 1.0
+    private let waitInterval = Settings.waitTime
     
     override init(frame: CGRect) {
         counter = 0
