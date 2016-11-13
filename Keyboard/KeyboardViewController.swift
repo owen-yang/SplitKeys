@@ -19,7 +19,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let numeralKeyboard = NumeralKeyboard()
     let symbolKeyboard = SymbolKeyboard()
     var keyboardJustSwitched = false
-    
+    var autocorrectIsOn = false
     var currentKeyboard: Keyboard
     
     let swipeDownRecognizer = UISwipeGestureRecognizer()
@@ -33,8 +33,15 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     var timeBackspaceLastUsed = Date()
     let speechSynthesizer = AVSpeechSynthesizer()
     var characterJustSelected = false
-
+    
     let contrastBar = UIView()
+    let suggestedWordLabel = UILabel()
+    var suggestedWord: String = "" {
+        didSet {
+            suggestedWordLabel.text = suggestedWord
+        }
+    }
+
     
     enum Mode {
         case upper
@@ -119,10 +126,21 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         contrastBar.backgroundColor = .black
         contrastBar.isUserInteractionEnabled = false
         contrastBar.translatesAutoresizingMaskIntoConstraints = false
+
+        let labelOffset = CGFloat(Settings.contrastBarSize / 12)
+        contrastBar.addSubview(suggestedWordLabel)
+        suggestedWordLabel.textColor = .yellow
+        suggestedWordLabel.textAlignment = .center
+        suggestedWordLabel.font = UIFont.systemFont(ofSize: CGFloat(Settings.contrastBarSize))
+        suggestedWordLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: CGFloat(Settings.contrastBarSize)))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
+
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerX, relatedBy: .equal, toItem: contrastBar, attribute: .centerX, multiplier: 1, constant: labelOffset))
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerY, relatedBy: .equal, toItem: contrastBar, attribute: .centerY, multiplier: 1, constant: labelOffset))
         
         if Settings.isAudioEnabled {
             speakImmediate(word: currentKeyboard.getName())
@@ -132,7 +150,39 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didSelect(char: Character) {
-        textDocumentProxy.insertText("\(char)")
+        if Settings.isAutocorrectEnabled {
+            let delimiterCharSet = ",.!?\")"
+            let isDelimiterChar = delimiterCharSet.contains("\(char)")
+            let proxy = self.textDocumentProxy
+            
+            if isDelimiterChar {
+                delimiterAutocorrect()
+                textDocumentProxy.insertText("\(char)")
+            }
+            else {
+                textDocumentProxy.insertText("\(char)")
+                let spellChecker = UITextChecker()
+                if let lastWord = proxy.documentContextBeforeInput?.components(separatedBy: " ").last! {
+                    let wordRange = NSRange(0..<(lastWord.utf16.count))
+                    let misspelledRange = spellChecker.rangeOfMisspelledWord(in: lastWord, range: wordRange, startingAt: 0, wrap: false, language: "en_US")
+                    if (misspelledRange.location != NSNotFound) {
+                        let wordGuesses = spellChecker.guesses(forWordRange: wordRange, in: lastWord, language: "en_US")
+                        if ((wordGuesses?.count) != 0) {
+                            suggestedWord = (wordGuesses?[0])!
+                            autocorrectIsOn = true
+                        }
+                    }
+                    else {
+                        autocorrectIsOn = false
+                        suggestedWord = ""
+                    }
+                }
+            }
+        }
+        else {
+            textDocumentProxy.insertText("\(char)")
+        }
+
         if Settings.isAudioEnabled {
             speechSynthesizer.stopSpeaking(at: .immediate)
             speechSynthesizer.speak(createUtterance(word: "\(char)"))
@@ -141,17 +191,24 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didSwipeLeft() {
-        let backspaceDate = Date()
-        if currentKeyboard.isUserTyping() {
-            currentKeyboard.resetKeys()
-            handleStateChange()
-        } else {
-            if backspaceDate.timeIntervalSince(timeBackspaceLastUsed) < 0.5 && canDeleteWord() {
-                deleteWord()
+        
+        if (autocorrectIsOn) {
+            autocorrectIsOn = false
+            suggestedWord = ""
+        }
+        else {
+            let backspaceDate = Date()
+            if currentKeyboard.isUserTyping() {
+                currentKeyboard.resetKeys()
+                handleStateChange()
             } else {
-                backspace()
+                if backspaceDate.timeIntervalSince(timeBackspaceLastUsed) < 0.5 && canDeleteWord() {
+                    deleteWord()
+                } else {
+                    backspace()
+                }
+                timeBackspaceLastUsed = backspaceDate
             }
-            timeBackspaceLastUsed = backspaceDate
         }
     }
     
@@ -172,7 +229,20 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         timeSpaceLastUsed = spaceDate
     }
     
+    func delimiterAutocorrect() {
+        if Settings.isAutocorrectEnabled {
+            let proxy = self.textDocumentProxy
+            if autocorrectIsOn && canDeleteWord() && suggestedWord != "" {
+                deleteWord()
+                proxy.insertText(suggestedWord)
+            }
+            suggestedWord = ""
+            autocorrectIsOn = false
+        }
+    }
+    
     func handleSpace() {
+        delimiterAutocorrect()
         textDocumentProxy.insertText(" ")
         if Settings.isAudioEnabled {
             speakImmediate(word: "space")
@@ -194,6 +264,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     func handlePeriodSpace() {
         textDocumentProxy.deleteBackward()
+        delimiterAutocorrect()
         textDocumentProxy.insertText(".")
         textDocumentProxy.insertText(" ")
         if Settings.isAudioEnabled {
@@ -218,7 +289,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
             speechSynthesizer.speak(createUtterance(word: word))
         }
     }
-    
+
     func switchToNextMode() {
         switch mode {
         case .upper:
