@@ -41,10 +41,9 @@ class SymbolKeyboard: DualKeyboard {
         }
     }
     
-    override func getStateString() -> String {
-        return (symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])") +
-            " " +
-            "\(charSet[symbolIndex])"
+    override func getStateString() -> [String] {
+        return [(symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])"),
+            "\(charSet[symbolIndex])"]
     }
     
     func didSelectSymbol(sender: UILongPressGestureRecognizer) {

@@ -32,8 +32,8 @@ class NumeralKeyboard: SingleKeyboard {
         counter = counter % 9 + 1
     }
     
-    override func getStateString() -> String {
-        return "\(counter)"
+    override func getStateString() -> [String] {
+        return ["\(counter)"]
     }
     
     override func getName() -> String {

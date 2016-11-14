@@ -264,26 +264,35 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func speakImmediate(words: [String]) {
+        speechSynthesizer.stopSpeaking(at: .immediate)
+        speakWords(words: words, delayFirst: false)
+    }
+    
+    func speakWords(words: [String], delayFirst: Bool) {
         if !Settings.isAudioEnabled {
             return
         }
-        speechSynthesizer.stopSpeaking(at: .immediate)
+        var first = true
         for word in words {
-            speechSynthesizer.speak(createUtterance(word: word))
+            speechSynthesizer.speak(createUtterance(word: word, delay: (first && delayFirst)))
+            first = false
         }
     }
     
-    func announceState(state: String) {
-        if !Settings.isAudioEnabled {
+    func announceState(state: [String]) {
+        if state.count <= 0 {
             return
         }
-        let wordsArray = state.lowercased().characters.split(separator: " ").map(String.init)
+        
         if !characterJustSelected && !keyboardJustSwitched {
             speechSynthesizer.stopSpeaking(at: .immediate)
         }
-        for word in wordsArray {
-            speechSynthesizer.speak(createUtterance(word: word))
+        speakWords(words: state[0].lowercased().characters.split(separator: " ").map(String.init), delayFirst: false)
+        for i in 1 ..< state.count {
+            let wordsArray = state[i].lowercased().characters.split(separator: " ").map(String.init)
+            speakWords(words: wordsArray, delayFirst: true)
         }
+        
     }
 
     func switchToNextMode() {
@@ -299,10 +308,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         }
     }
     
-    func createUtterance(word: String) -> AVSpeechUtterance {
+    func createUtterance(word: String, delay: Bool) -> AVSpeechUtterance {
         let result = AVSpeechUtterance(string: word)
         result.rate = Float(Settings.audioSpeed)
         result.volume = Float(Settings.audioVolume)
+        result.preUtteranceDelay = delay ? 0.3 : 0
         return result
     }
     

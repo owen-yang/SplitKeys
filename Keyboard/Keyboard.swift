@@ -21,8 +21,8 @@ class Keyboard: UIView {
         fatalError("handleButtonTap(UITapGestureRecognizer) not implemented")
     }
     
-    func getStateString() -> String {
-        return ""
+    func getStateString() -> [String] {
+        return [""]
     }
     
     func getName() -> String {
