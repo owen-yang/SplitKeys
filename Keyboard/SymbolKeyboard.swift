@@ -22,17 +22,13 @@ class SymbolKeyboard: DualKeyboard {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        charSet = [",", ".", "\"", ")", "(", "?", ":", "'", "!", ";", "-", "*",
-                   "@", "_", "=", "%", "$", "#", "&", "/", ">", "{", "}", "[", "]",
-                   "\\", "+", "|", "<", "~", "^", "`"]
+        charSet = [".", "\"", ")", "(", "?", ":", "'", "!", ";", "-", "*",
+                   "@", "_", "=", "%", "$", "#", "&", "/", ">", "{", "}", "[",
+                   "]", "\\", "+", "|", "<", "~", "^", "`", ","]
         leftTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
         rightTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
         leftlongPressGestureRecognizer.addTarget(self, action: #selector(self.didSelectSymbol(sender:)))
         rightlongPressGestureRecognizer.addTarget(self, action: #selector(self.didSelectSymbol(sender:)))
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     override func handleButtonTap(sender: UITapGestureRecognizer) {

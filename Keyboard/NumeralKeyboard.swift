@@ -17,17 +17,13 @@ class NumeralKeyboard: SingleKeyboard {
     }
     
     private var timer: Timer?
-    private let waitInterval = 1.0
+    private let waitInterval = Settings.waitTime
     
     override init(frame: CGRect) {
         counter = 0
         super.init(frame: frame)
         tapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
         longPressGestureRecognizer.addTarget(self, action: #selector(self.didLongPress(sender:)))
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     override func handleButtonTap(sender: UITapGestureRecognizer) {
