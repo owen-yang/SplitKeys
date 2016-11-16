@@ -55,10 +55,9 @@ class AlphaKeyboard: DualKeyboard {
         return "\(charSet[lowerBound])" + " through " + "\(charSet[upperBound])"
     }
     
-    override func getStateString() -> String {
-        return createStateString(lowerBound: leftLowerIndex, upperBound: leftUpperIndex) +
-            " " +
-            createStateString(lowerBound: rightLowerIndex, upperBound: rightUpperIndex)
+    override func getStateString() -> [String] {
+        return [createStateString(lowerBound: leftLowerIndex, upperBound: leftUpperIndex),
+            createStateString(lowerBound: rightLowerIndex, upperBound: rightUpperIndex)]
     }
     
     override func resetKeys() {

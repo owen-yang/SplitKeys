@@ -143,7 +143,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerY, relatedBy: .equal, toItem: contrastBar, attribute: .centerY, multiplier: 1, constant: labelOffset))
         
         if Settings.isAudioEnabled {
-            speakImmediate(word: currentKeyboard.getName())
+            speakImmediate(words: [currentKeyboard.getName()])
         }
         keyboardJustSwitched = true
         handleStateChange()
@@ -182,11 +182,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         else {
             textDocumentProxy.insertText("\(char)")
         }
-
-        if Settings.isAudioEnabled {
-            speechSynthesizer.stopSpeaking(at: .immediate)
-            speechSynthesizer.speak(createUtterance(word: "\(char)"))
-        }
+        speakImmediate(words: ["\(char)"])
         characterJustSelected = true
     }
     
@@ -214,9 +210,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     func backspace() {
         textDocumentProxy.deleteBackward()
-        if Settings.isAudioEnabled {
-            speakImmediate(word: "backspace")
-        }
+        speakImmediate(words: ["backspace"])
     }
     
     func didSwipeDown() {
@@ -244,9 +238,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     func handleSpace() {
         delimiterAutocorrect()
         textDocumentProxy.insertText(" ")
-        if Settings.isAudioEnabled {
-            speakImmediate(word: "space")
-        }
+        speakImmediate(words: ["space"])
     }
     
     func canDeleteWord() -> Bool {
@@ -267,27 +259,40 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         delimiterAutocorrect()
         textDocumentProxy.insertText(".")
         textDocumentProxy.insertText(" ")
-        if Settings.isAudioEnabled {
-            speechSynthesizer.stopSpeaking(at: .immediate)
-            speechSynthesizer.speak(createUtterance(word: "."))
-            speechSynthesizer.speak(createUtterance(word: "space"))
-        }
+        speakImmediate(words: [".", "space"])
         periodJustEntered = true
     }
     
-    func speakImmediate(word: String) {
+    func speakImmediate(words: [String]) {
         speechSynthesizer.stopSpeaking(at: .immediate)
-        speechSynthesizer.speak(createUtterance(word: word))
+        speakWords(words: words, delayFirst: false)
     }
     
-    func announceState(state: String) {
-        let wordsArray = state.lowercased().characters.split(separator: " ").map(String.init)
+    func speakWords(words: [String], delayFirst: Bool) {
+        if !Settings.isAudioEnabled {
+            return
+        }
+        var first = true
+        for word in words {
+            speechSynthesizer.speak(createUtterance(word: word, delay: (first && delayFirst)))
+            first = false
+        }
+    }
+    
+    func announceState(state: [String]) {
+        if state.count <= 0 {
+            return
+        }
+        
         if !characterJustSelected && !keyboardJustSwitched {
             speechSynthesizer.stopSpeaking(at: .immediate)
         }
-        for word in wordsArray {
-            speechSynthesizer.speak(createUtterance(word: word))
+        speakWords(words: state[0].lowercased().characters.split(separator: " ").map(String.init), delayFirst: false)
+        for i in 1 ..< state.count {
+            let wordsArray = state[i].lowercased().characters.split(separator: " ").map(String.init)
+            speakWords(words: wordsArray, delayFirst: true)
         }
+        
     }
 
     func switchToNextMode() {
@@ -303,10 +308,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         }
     }
     
-    func createUtterance(word: String) -> AVSpeechUtterance {
+    func createUtterance(word: String, delay: Bool) -> AVSpeechUtterance {
         let result = AVSpeechUtterance(string: word)
         result.rate = Float(Settings.audioSpeed)
         result.volume = Float(Settings.audioVolume)
+        result.preUtteranceDelay = delay ? 0.3 : 0
         return result
     }
     
@@ -315,9 +321,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func handleStateChange() {
-        if Settings.isAudioEnabled {
-           announceState(state: currentKeyboard.getStateString())
-        }
+        announceState(state: currentKeyboard.getStateString())
         characterJustSelected = false
         periodJustEntered = false
         keyboardJustSwitched = false

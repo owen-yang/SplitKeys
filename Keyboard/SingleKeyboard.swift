@@ -18,6 +18,7 @@ class SingleKeyboard: Keyboard {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        longPressGestureRecognizer.minimumPressDuration = Settings.holdTime
         button.addGestureRecognizer(tapGestureRecognizer)
         button.addGestureRecognizer(longPressGestureRecognizer)
                 
