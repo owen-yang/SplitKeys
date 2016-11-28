@@ -31,7 +31,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     var timeSpaceLastUsed = Date()
     var timeBackspaceLastUsed = Date()
-    let speechSynthesizer = AVSpeechSynthesizer()
+    var speechSynthesizer = AVSpeechSynthesizer()
     var characterJustSelected = false
     
     let contrastBar = UIView()
@@ -264,7 +264,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func speakImmediate(words: [String]) {
-        speechSynthesizer.stopSpeaking(at: .immediate)
+        stopSynthesizer()
         speakWords(words: words, delayFirst: false)
     }
     
@@ -285,7 +285,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         }
         
         if !characterJustSelected && !keyboardJustSwitched {
-            speechSynthesizer.stopSpeaking(at: .immediate)
+            stopSynthesizer()
         }
         speakWords(words: state[0].lowercased().characters.split(separator: " ").map(String.init), delayFirst: false)
         for i in 1 ..< state.count {
@@ -293,6 +293,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
             speakWords(words: wordsArray, delayFirst: true)
         }
         
+    }
+    
+    func stopSynthesizer() {
+        speechSynthesizer.stopSpeaking(at: .immediate)
+        speechSynthesizer = AVSpeechSynthesizer()
     }
 
     func switchToNextMode() {
