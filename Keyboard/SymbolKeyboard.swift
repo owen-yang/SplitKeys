@@ -22,9 +22,6 @@ class SymbolKeyboard: DualKeyboard {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        charSet = [".", "\"", ")", "(", "?", ":", "'", "!", ";", "-", "*",
-                   "@", "_", "=", "%", "$", "#", "&", "/", ">", "{", "}", "[",
-                   "]", "\\", "+", "|", "<", "~", "^", "`", ","]
         leftTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
         rightTapGestureRecognizer.addTarget(self, action: #selector(self.didTapButton(sender:)))
         leftlongPressGestureRecognizer.addTarget(self, action: #selector(self.didSelectSymbol(sender:)))
@@ -43,7 +40,7 @@ class SymbolKeyboard: DualKeyboard {
     
     override func getStateString() -> [String] {
         return [(symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])"),
-            "\(charSet[symbolIndex])"]
+                "\(charSet[symbolIndex])"]
     }
     
     func didSelectSymbol(sender: UILongPressGestureRecognizer) {
@@ -89,8 +86,31 @@ class SymbolKeyboard: DualKeyboard {
     override func isUserTyping() -> Bool {
         return userTyping
     }
+}
+
+class SpecialCharsKeyboard: SymbolKeyboard {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        charSet = [".", "\"", ")", "(", "?", ":", "'", "!", ";", "-", "*",
+                   "@", "_", "=", "%", "$", "#", "&", "/", ">", "{", "}", "[",
+                   "]", "\\", "+", "|", "<", "~", "^", "`", ","]
+    }
     
     override func getName() -> String {
         return "Symbols"
+    }
+}
+
+class EmojiKeyboard: SymbolKeyboard {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        for i in 0x1F602...0x1F637 {
+            charSet.append(Character(UnicodeScalar(i)!))
+        }
+        charSet.append(Character(UnicodeScalar(0x1F601)!))
+    }
+    
+    override func getName() -> String {
+        return "Emojis"
     }
 }
