@@ -17,7 +17,6 @@ class SymbolKeyboard: DualKeyboard {
     }
     //Make symbol selection occur after certain amt of time instead of after button release
     private var symbolIndex = 0
-    private var index = 0
     private var userTyping = false;
     
     override init(frame: CGRect) {
@@ -39,19 +38,17 @@ class SymbolKeyboard: DualKeyboard {
     }
     
     override func getStateString() -> [String] {
-        return [(symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])"),
-                "\(charSet[symbolIndex])"]
+        return ["\(charSet[symbolIndex % charSet.count])", "\(charSet[(symbolIndex + 1) % charSet.count])"]
     }
     
     func didSelectSymbol(sender: UILongPressGestureRecognizer) {
         userTyping = true
         if sender.state == .began {
             if sender == leftlongPressGestureRecognizer {
-                index = symbolIndex > 0 ? (symbolIndex - 1) : charSet.count - 1
-                delegate?.didSelect(char: charSet[index])
+                delegate?.didSelect(char: charSet[symbolIndex % charSet.count])
             }
             else if sender == rightlongPressGestureRecognizer {
-                delegate?.didSelect(char: charSet[symbolIndex])
+                delegate?.didSelect(char: charSet[(symbolIndex + 1) % charSet.count])
             }
         }
     }
@@ -79,8 +76,8 @@ class SymbolKeyboard: DualKeyboard {
     }
     
     private func updateButtonLabels() {
-        leftLabel.text = symbolIndex > 0 ? "\(charSet[symbolIndex - 1])" : "\(charSet[charSet.count - 1])"
-        rightLabel.text = "\(charSet[symbolIndex])"
+        leftLabel.text = "\(charSet[symbolIndex % charSet.count])"
+        rightLabel.text = "\(charSet[(symbolIndex + 1) % charSet.count])"
     }
     
     override func isUserTyping() -> Bool {
@@ -91,9 +88,9 @@ class SymbolKeyboard: DualKeyboard {
 class SpecialCharsKeyboard: SymbolKeyboard {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        charSet = [".", "\"", ")", "(", "?", ":", "'", "!", ";", "-", "*",
+        charSet = [",", ".", "\"", ")", "(", "?", ":", "'", "!", ";", "-", "*",
                    "@", "_", "=", "%", "$", "#", "&", "/", ">", "{", "}", "[",
-                   "]", "\\", "+", "|", "<", "~", "^", "`", ","]
+                   "]", "\\", "+", "|", "<", "~", "^", "`"]
     }
     
     override func getName() -> String {
@@ -104,10 +101,9 @@ class SpecialCharsKeyboard: SymbolKeyboard {
 class EmojiKeyboard: SymbolKeyboard {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        for i in 0x1F602...0x1F637 {
+        for i in 0x1F601...0x1F637 {
             charSet.append(Character(UnicodeScalar(i)!))
         }
-        charSet.append(Character(UnicodeScalar(0x1F601)!))
     }
     
     override func getName() -> String {
