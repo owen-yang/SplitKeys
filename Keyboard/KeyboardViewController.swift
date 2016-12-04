@@ -17,7 +17,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let upperKeyboard = UpperKeyboard()
     let lowerKeyboard = LowerKeyboard()
     let numeralKeyboard = NumeralKeyboard()
-    let symbolKeyboard = SymbolKeyboard()
+    let symbolKeyboard = SpecialCharsKeyboard()
+    let emojiKeyboard = EmojiKeyboard()
     var keyboardJustSwitched = false
     var autocorrectIsOn = false
     var currentKeyboard: Keyboard
@@ -48,6 +49,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         case lower
         case numeral
         case symbol
+        case emoji
     }
     
     private var mode: Mode = .upper {
@@ -61,6 +63,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
                 loadKeyboard(numeralKeyboard)
             case .symbol:
                 loadKeyboard(symbolKeyboard)
+            case .emoji:
+                loadKeyboard(emojiKeyboard)
             }
         }
     }
@@ -74,6 +78,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         lowerKeyboard.delegate = self
         symbolKeyboard.delegate = self
         numeralKeyboard.delegate = self
+        emojiKeyboard.delegate = self
         
         swipeRightRecognizer.direction = .right
         swipeRightRecognizer.addTarget(self, action: #selector(self.switchToNextMode))
@@ -309,6 +314,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         case .numeral:
             mode = .symbol
         case .symbol:
+            mode = .emoji
+        case .emoji:
             mode = .upper
         }
     }
