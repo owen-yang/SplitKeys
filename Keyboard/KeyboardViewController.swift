@@ -28,6 +28,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeLeftRecognizer = UISwipeGestureRecognizer()
     let swipeUpRecognizer = UISwipeGestureRecognizer()
     let doubleSwipeDownRecognizer = UISwipeGestureRecognizer()
+    let tripleSwipeDownRecognizer = UISwipeGestureRecognizer()
     var periodJustEntered = false
     
     var timeSpaceLastUsed = Date()
@@ -91,7 +92,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         
         doubleSwipeDownRecognizer.direction = .down
         doubleSwipeDownRecognizer.numberOfTouchesRequired = 2
-        doubleSwipeDownRecognizer.addTarget(self, action: #selector(self.dismissKeyboard))
+        doubleSwipeDownRecognizer.addTarget(self, action: #selector(self.handleNewLine))
+        
+        tripleSwipeDownRecognizer.direction = .down
+        tripleSwipeDownRecognizer.numberOfTouchesRequired = 3
+        tripleSwipeDownRecognizer.addTarget(self, action: #selector(self.dismissKeyboard))
         
         swipeLeftRecognizer.direction = .left
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
@@ -113,6 +118,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         view.addGestureRecognizer(swipeLeftRecognizer)
         view.addGestureRecognizer(swipeUpRecognizer)
         view.addGestureRecognizer(doubleSwipeDownRecognizer)
+        view.addGestureRecognizer(tripleSwipeDownRecognizer)
     }
     
     private func loadKeyboard(_ keyboard: Keyboard) {
@@ -163,28 +169,25 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
             if isDelimiterChar {
                 delimiterAutocorrect()
                 textDocumentProxy.insertText("\(char)")
-            }
-            else {
+            } else {
                 textDocumentProxy.insertText("\(char)")
                 let spellChecker = UITextChecker()
-                if let lastWord = proxy.documentContextBeforeInput?.components(separatedBy: " ").last! {
+                if let lastWord = proxy.documentContextBeforeInput?.components(separatedBy: " ").last {
                     let wordRange = NSRange(0..<(lastWord.utf16.count))
                     let misspelledRange = spellChecker.rangeOfMisspelledWord(in: lastWord, range: wordRange, startingAt: 0, wrap: false, language: "en_US")
-                    if (misspelledRange.location != NSNotFound) {
+                    if misspelledRange.location != NSNotFound {
                         let wordGuesses = spellChecker.guesses(forWordRange: wordRange, in: lastWord, language: "en_US")
-                        if ((wordGuesses?.count) != 0) {
+                        if wordGuesses?.count != 0 {
                             suggestedWord = (wordGuesses?[0])!
                             autocorrectIsOn = true
                         }
-                    }
-                    else {
+                    } else {
                         autocorrectIsOn = false
                         suggestedWord = ""
                     }
                 }
             }
-        }
-        else {
+        } else {
             textDocumentProxy.insertText("\(char)")
         }
         speakImmediate(words: ["\(char)"])
@@ -192,25 +195,25 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didSwipeLeft() {
-        
-        if (autocorrectIsOn) {
+        if autocorrectIsOn {
             autocorrectIsOn = false
             suggestedWord = ""
+            return
         }
-        else {
-            let backspaceDate = Date()
-            if currentKeyboard.isUserTyping() {
-                currentKeyboard.resetKeys()
-                handleStateChange()
-            } else {
-                if backspaceDate.timeIntervalSince(timeBackspaceLastUsed) < 0.5 && canDeleteWord() {
-                    deleteWord()
-                } else {
-                    backspace()
-                }
-                timeBackspaceLastUsed = backspaceDate
-            }
+        
+        if currentKeyboard.isUserTyping() {
+            currentKeyboard.resetKeys()
+            handleStateChange()
+            return
         }
+        
+        let backspaceDate = Date()
+        if backspaceDate.timeIntervalSince(timeBackspaceLastUsed) < 0.5 && canDeleteWord() {
+            deleteWord()
+        } else {
+            backspace()
+        }
+        timeBackspaceLastUsed = backspaceDate
     }
     
     func backspace() {
@@ -228,16 +231,23 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         timeSpaceLastUsed = spaceDate
     }
     
+    func handleNewLine() {
+        textDocumentProxy.insertText("\n")
+        speakImmediate(words: ["new line"])
+    }
+    
     func delimiterAutocorrect() {
-        if Settings.isAutocorrectEnabled {
-            let proxy = self.textDocumentProxy
-            if autocorrectIsOn && canDeleteWord() && suggestedWord != "" {
-                deleteWord()
-                proxy.insertText(suggestedWord)
-            }
-            suggestedWord = ""
-            autocorrectIsOn = false
+        if !Settings.isAutocorrectEnabled {
+            return
         }
+
+        let proxy = self.textDocumentProxy
+        if autocorrectIsOn && canDeleteWord() && suggestedWord != "" {
+            deleteWord()
+            proxy.insertText(suggestedWord)
+        }
+        suggestedWord = ""
+        autocorrectIsOn = false
     }
     
     func handleSpace() {
