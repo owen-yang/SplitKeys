@@ -27,6 +27,7 @@ class Settings {
         static let holdTime = 0.5
         static let waitTime = 1.0
         static let isAutocorrectEnabled = true
+        static let isAutocorrectAudioEnabled = true
         static let contrastBarSize = ContrastBarSize.medium.rawValue
     }
 
@@ -84,21 +85,30 @@ class Settings {
         }
     }
     
-    static var contrastBarSize: Double {
-        get {
-            return userDefaults.object(forKey: "contrastBarSize") as! Double? ?? Defaults.contrastBarSize
-        }
-        set (contrastBarSize) {
-            userDefaults.set(contrastBarSize, forKey: "contrastBarSize")
-        }
-    }
-    
     static var isAutocorrectEnabled: Bool {
         get {
             return userDefaults.object(forKey: "isAutocorrectEnabled") as! Bool? ?? Defaults.isAutocorrectEnabled
         }
         set(enable) {
             userDefaults.set(enable, forKey: "isAutocorrectEnabled")
+        }
+    }
+    
+    static var isAutocorrectAudioEnabled: Bool {
+        get {
+            return userDefaults.object(forKey: "isAutocorrectAudioEnabled") as! Bool? ?? Defaults.isAutocorrectAudioEnabled
+        }
+        set(enable) {
+            userDefaults.set(enable, forKey: "isAutocorrectAudioEnabled")
+        }
+    }
+    
+    static var contrastBarSize: Double {
+        get {
+            return userDefaults.object(forKey: "contrastBarSize") as! Double? ?? Defaults.contrastBarSize
+        }
+        set (contrastBarSize) {
+            userDefaults.set(contrastBarSize, forKey: "contrastBarSize")
         }
     }
 }

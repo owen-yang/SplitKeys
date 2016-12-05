@@ -40,7 +40,7 @@ class SettingsTableViewController: UITableViewController {
         ),
         (
             header: "AUTOCORRECT",
-            cells: [AutocorrectToggleTableViewCell()],
+            cells: [AutocorrectToggleTableViewCell(), AutocorrectAudioToggleTableViewCell()],
             footer: ""
         )
     ]
