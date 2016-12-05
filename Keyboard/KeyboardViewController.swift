@@ -14,10 +14,7 @@ import AVFoundation
 
 class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
-    let upperKeyboard = UpperKeyboard()
-    let lowerKeyboard = LowerKeyboard()
-    let numeralKeyboard = NumeralKeyboard()
-    let symbolKeyboard = SymbolKeyboard()
+    let keyboards = [UpperKeyboard(), LowerKeyboard(), NumeralKeyboard(), SpecialCharsKeyboard(), EmojiKeyboard()]
     var keyboardJustSwitched = false
     var autocorrectIsOn = false
     var currentKeyboard: Keyboard
@@ -27,6 +24,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     let swipeLeftRecognizer = UISwipeGestureRecognizer()
     let swipeUpRecognizer = UISwipeGestureRecognizer()
     let doubleSwipeDownRecognizer = UISwipeGestureRecognizer()
+    let tripleSwipeDownRecognizer = UISwipeGestureRecognizer()
     var periodJustEntered = false
     
     var timeSpaceLastUsed = Date()
@@ -41,39 +39,15 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
             suggestedWordLabel.text = suggestedWord
         }
     }
-
-    
-    enum Mode {
-        case upper
-        case lower
-        case numeral
-        case symbol
-    }
-    
-    private var mode: Mode = .upper {
-        didSet {
-            switch (mode) {
-            case .upper:
-                loadKeyboard(upperKeyboard)
-            case .lower:
-                loadKeyboard(lowerKeyboard)
-            case .numeral:
-                loadKeyboard(numeralKeyboard)
-            case .symbol:
-                loadKeyboard(symbolKeyboard)
-            }
-        }
-    }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {        
-        currentKeyboard = upperKeyboard
+        currentKeyboard = keyboards[0]
         
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
-        upperKeyboard.delegate = self
-        lowerKeyboard.delegate = self
-        symbolKeyboard.delegate = self
-        numeralKeyboard.delegate = self
+        for keyboard in keyboards {
+            keyboard.delegate = self
+        }
         
         swipeRightRecognizer.direction = .right
         swipeRightRecognizer.addTarget(self, action: #selector(self.switchToNextMode))
@@ -86,7 +60,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         
         doubleSwipeDownRecognizer.direction = .down
         doubleSwipeDownRecognizer.numberOfTouchesRequired = 2
-        doubleSwipeDownRecognizer.addTarget(self, action: #selector(self.dismissKeyboard))
+        doubleSwipeDownRecognizer.addTarget(self, action: #selector(self.handleNewLine))
+        
+        tripleSwipeDownRecognizer.direction = .down
+        tripleSwipeDownRecognizer.numberOfTouchesRequired = 3
+        tripleSwipeDownRecognizer.addTarget(self, action: #selector(self.dismissKeyboard))
         
         swipeLeftRecognizer.direction = .left
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
@@ -98,16 +76,14 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadKeyboard(upperKeyboard)
+        loadKeyboard(keyboards[0])
 
         let calculatedHeight = UIScreen.main.bounds.height * CGFloat(Settings.heightProportion)
         view.addConstraint(NSLayoutConstraint(item:view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: calculatedHeight))
         
-        view.addGestureRecognizer(swipeRightRecognizer)
-        view.addGestureRecognizer(swipeDownRecognizer)
-        view.addGestureRecognizer(swipeLeftRecognizer)
-        view.addGestureRecognizer(swipeUpRecognizer)
-        view.addGestureRecognizer(doubleSwipeDownRecognizer)
+        for gestureRecognizer in [swipeUpRecognizer, swipeDownRecognizer, swipeLeftRecognizer, swipeRightRecognizer, doubleSwipeDownRecognizer, tripleSwipeDownRecognizer] {
+            view.addGestureRecognizer(gestureRecognizer)
+        }
     }
     
     private func loadKeyboard(_ keyboard: Keyboard) {
@@ -149,37 +125,34 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         handleStateChange()
     }
     
+    override func textDidChange(_ textInput: UITextInput?) {
+        currentKeyboard.resetKeys()
+    }
+    
     func didSelect(char: Character) {
         if Settings.isAutocorrectEnabled {
-            let delimiterCharSet = ",.!?\")"
-            let isDelimiterChar = delimiterCharSet.contains("\(char)")
-            let proxy = self.textDocumentProxy
-            
-            if isDelimiterChar {
+            if ",.!?\")".contains("\(char)") {
                 delimiterAutocorrect()
                 textDocumentProxy.insertText("\(char)")
-            }
-            else {
+            } else {
                 textDocumentProxy.insertText("\(char)")
                 let spellChecker = UITextChecker()
-                if let lastWord = proxy.documentContextBeforeInput?.components(separatedBy: " ").last! {
+                if let lastWord = textDocumentProxy.documentContextBeforeInput?.components(separatedBy: " ").last {
                     let wordRange = NSRange(0..<(lastWord.utf16.count))
                     let misspelledRange = spellChecker.rangeOfMisspelledWord(in: lastWord, range: wordRange, startingAt: 0, wrap: false, language: "en_US")
-                    if (misspelledRange.location != NSNotFound) {
+                    if misspelledRange.location != NSNotFound {
                         let wordGuesses = spellChecker.guesses(forWordRange: wordRange, in: lastWord, language: "en_US")
-                        if ((wordGuesses?.count) != 0) {
+                        if wordGuesses?.count != 0 {
                             suggestedWord = (wordGuesses?[0])!
                             autocorrectIsOn = true
                         }
-                    }
-                    else {
+                    } else {
                         autocorrectIsOn = false
                         suggestedWord = ""
                     }
                 }
             }
-        }
-        else {
+        } else {
             textDocumentProxy.insertText("\(char)")
         }
         speakImmediate(words: ["\(char)"])
@@ -187,25 +160,25 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didSwipeLeft() {
-        
-        if (autocorrectIsOn) {
+        if autocorrectIsOn {
             autocorrectIsOn = false
             suggestedWord = ""
+            return
         }
-        else {
-            let backspaceDate = Date()
-            if currentKeyboard.isUserTyping() {
-                currentKeyboard.resetKeys()
-                handleStateChange()
-            } else {
-                if backspaceDate.timeIntervalSince(timeBackspaceLastUsed) < 0.5 && canDeleteWord() {
-                    deleteWord()
-                } else {
-                    backspace()
-                }
-                timeBackspaceLastUsed = backspaceDate
-            }
+        
+        if currentKeyboard.isUserTyping() {
+            currentKeyboard.resetKeys()
+            handleStateChange()
+            return
         }
+        
+        let backspaceDate = Date()
+        if backspaceDate.timeIntervalSince(timeBackspaceLastUsed) < 0.5 && canDeleteWord() {
+            deleteWord()
+        } else {
+            backspace()
+        }
+        timeBackspaceLastUsed = backspaceDate
     }
     
     func backspace() {
@@ -223,22 +196,36 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         timeSpaceLastUsed = spaceDate
     }
     
-    func delimiterAutocorrect() {
-        if Settings.isAutocorrectEnabled {
-            let proxy = self.textDocumentProxy
-            if autocorrectIsOn && canDeleteWord() && suggestedWord != "" {
-                deleteWord()
-                proxy.insertText(suggestedWord)
-            }
-            suggestedWord = ""
-            autocorrectIsOn = false
-        }
+    func handlePeriodSpace() {
+        textDocumentProxy.deleteBackward()
+        delimiterAutocorrect()
+        textDocumentProxy.insertText(". ")
+        speakImmediate(words: [".", "space"])
+        periodJustEntered = true
     }
     
     func handleSpace() {
         delimiterAutocorrect()
         textDocumentProxy.insertText(" ")
         speakImmediate(words: ["space"])
+    }
+    
+    func handleNewLine() {
+        textDocumentProxy.insertText("\n")
+        speakImmediate(words: ["new line"])
+    }
+    
+    func delimiterAutocorrect() {
+        if !Settings.isAutocorrectEnabled {
+            return
+        }
+
+        if autocorrectIsOn && canDeleteWord() && suggestedWord != "" {
+            deleteWord()
+            textDocumentProxy.insertText(suggestedWord)
+        }
+        suggestedWord = ""
+        autocorrectIsOn = false
     }
     
     func canDeleteWord() -> Bool {
@@ -254,15 +241,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         }
     }
     
-    func handlePeriodSpace() {
-        textDocumentProxy.deleteBackward()
-        delimiterAutocorrect()
-        textDocumentProxy.insertText(".")
-        textDocumentProxy.insertText(" ")
-        speakImmediate(words: [".", "space"])
-        periodJustEntered = true
-    }
-    
     func speakImmediate(words: [String]) {
         stopSynthesizer()
         speakWords(words: words, delayFirst: false)
@@ -274,7 +252,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         }
         var first = true
         for word in words {
-            speechSynthesizer.speak(createUtterance(word: word, delay: (first && delayFirst)))
+            speechSynthesizer.speak(createUtterance(word: word, delay: first && delayFirst))
             first = false
         }
     }
@@ -301,16 +279,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
 
     func switchToNextMode() {
-        switch mode {
-        case .upper:
-            mode = .lower
-        case .lower:
-            mode = .numeral
-        case .numeral:
-            mode = .symbol
-        case .symbol:
-            mode = .upper
-        }
+        let currentIndex = keyboards.index(of: currentKeyboard)!
+        loadKeyboard(keyboards[(currentIndex + 1) % keyboards.count])
     }
     
     func createUtterance(word: String, delay: Bool) -> AVSpeechUtterance {
@@ -319,10 +289,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         result.volume = Float(Settings.audioVolume)
         result.preUtteranceDelay = delay ? 0.3 : 0
         return result
-    }
-    
-    override func textDidChange(_ textInput: UITextInput?) {
-        currentKeyboard.resetKeys()
     }
     
     func handleStateChange() {

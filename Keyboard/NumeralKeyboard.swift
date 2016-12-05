@@ -18,6 +18,7 @@ class NumeralKeyboard: SingleKeyboard {
     
     private var timer: Timer?
     private let waitInterval = Settings.waitTime
+    private var isTyping = false
     
     override init(frame: CGRect) {
         counter = 0
@@ -29,7 +30,8 @@ class NumeralKeyboard: SingleKeyboard {
     override func handleButtonTap(sender: UITapGestureRecognizer) {
         timer?.invalidate()
         timer = Timer.scheduledTimer(timeInterval: waitInterval, target: self, selector: #selector(self.didSelectNumeral), userInfo: nil, repeats: false)
-        counter = counter % 9 + 1
+        counter = (counter + 1) % 10
+        isTyping = true
     }
     
     override func getStateString() -> [String] {
@@ -55,9 +57,10 @@ class NumeralKeyboard: SingleKeyboard {
     override func resetKeys() {
         timer?.invalidate()
         counter = 0
+        isTyping = false
     }
     
     override func isUserTyping() -> Bool {
-        return counter != 0
+        return isTyping
     }
 }
