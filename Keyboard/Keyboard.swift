@@ -11,7 +11,7 @@ import UIKit
 class Keyboard: UIView {
     var delegate: KeyboardDelegate?
     var defaultButtonColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
-    var defaultLabelFont = UIFont.systemFont(ofSize: 40)
+    var defaultLabelFont = UIFont.systemFont(ofSize: 70)
     
     func resetKeys() {}
     
