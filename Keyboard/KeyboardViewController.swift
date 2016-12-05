@@ -130,6 +130,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func didSelect(char: Character) {
+        speakImmediate(words: ["\(char)"])
+        characterJustSelected = true
         if Settings.isAutocorrectEnabled {
             if ",.!?\")".contains("\(char)") {
                 delimiterAutocorrect()
@@ -144,6 +146,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
                         let wordGuesses = spellChecker.guesses(forWordRange: wordRange, in: lastWord, language: "en_US")
                         if wordGuesses?.count != 0 {
                             suggestedWord = (wordGuesses?[0])!
+                            announceAutoCorrect(phrase: "Did you mean " + suggestedWord + "?")
                             autocorrectIsOn = true
                         }
                     } else {
@@ -155,8 +158,6 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         } else {
             textDocumentProxy.insertText("\(char)")
         }
-        speakImmediate(words: ["\(char)"])
-        characterJustSelected = true
     }
     
     func didSwipeLeft() {
@@ -197,17 +198,17 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     }
     
     func handlePeriodSpace() {
+        speakImmediate(words: [".", "space"])
         textDocumentProxy.deleteBackward()
         delimiterAutocorrect()
         textDocumentProxy.insertText(". ")
-        speakImmediate(words: [".", "space"])
         periodJustEntered = true
     }
     
     func handleSpace() {
+        speakImmediate(words: ["space"])
         delimiterAutocorrect()
         textDocumentProxy.insertText(" ")
-        speakImmediate(words: ["space"])
     }
     
     func handleNewLine() {
@@ -223,6 +224,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         if autocorrectIsOn && canDeleteWord() && suggestedWord != "" {
             deleteWord()
             textDocumentProxy.insertText(suggestedWord)
+            announceAutoCorrect(phrase: "Autocorrected to " + suggestedWord)
+            
         }
         suggestedWord = ""
         autocorrectIsOn = false
@@ -255,6 +258,13 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
             speechSynthesizer.speak(createUtterance(word: word, delay: first && delayFirst))
             first = false
         }
+    }
+    
+    func announceAutoCorrect(phrase: String) {
+        if !Settings.isAutocorrectAudioEnabled {
+            return
+        }
+        speakWords(words: [phrase], delayFirst: false)
     }
     
     func announceState(state: [String]) {
