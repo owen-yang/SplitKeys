@@ -102,21 +102,20 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         contrastBar.backgroundColor = .black
         contrastBar.isUserInteractionEnabled = false
         contrastBar.translatesAutoresizingMaskIntoConstraints = false
-
-        let labelOffset = CGFloat(Settings.contrastBarSize / 12)
-        contrastBar.addSubview(suggestedWordLabel)
-        suggestedWordLabel.textColor = .yellow
-        suggestedWordLabel.textAlignment = .center
-        suggestedWordLabel.font = UIFont.systemFont(ofSize: CGFloat(Settings.contrastBarSize))
-        suggestedWordLabel.translatesAutoresizingMaskIntoConstraints = false
-        
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: CGFloat(Settings.contrastBarSize)))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
 
-        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerX, relatedBy: .equal, toItem: contrastBar, attribute: .centerX, multiplier: 1, constant: labelOffset))
-        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerY, relatedBy: .equal, toItem: contrastBar, attribute: .centerY, multiplier: 1, constant: labelOffset))
+        contrastBar.addSubview(suggestedWordLabel)
+        suggestedWordLabel.textColor = .yellow
+        suggestedWordLabel.textAlignment = .center
+        suggestedWordLabel.font = UIFont.systemFont(ofSize: CGFloat(Settings.contrastBarSize) * 0.8)
+        suggestedWordLabel.translatesAutoresizingMaskIntoConstraints = false
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerX, relatedBy: .equal, toItem: contrastBar, attribute: .centerX, multiplier: 1, constant: 0))
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerY, relatedBy: .equal, toItem: contrastBar, attribute: .centerY, multiplier: 1, constant: 0))
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .height, relatedBy: .equal, toItem: contrastBar, attribute: .height, multiplier: 1, constant: 0))
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .width, relatedBy: .equal, toItem: contrastBar, attribute: .width, multiplier: 1, constant: 0))
         
         if Settings.isAudioEnabled {
             speakImmediate(words: [currentKeyboard.getName()])
