@@ -19,12 +19,12 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     var autocorrectIsOn = false
     var currentKeyboard: Keyboard
     
-    let swipeDownRecognizer = UISwipeGestureRecognizer()
-    let swipeRightRecognizer = UISwipeGestureRecognizer()
-    let swipeLeftRecognizer = UISwipeGestureRecognizer()
     let swipeUpRecognizer = UISwipeGestureRecognizer()
+    let swipeDownRecognizer = UISwipeGestureRecognizer()
+    let swipeLeftRecognizer = UISwipeGestureRecognizer()
+    let swipeRightRecognizer = UISwipeGestureRecognizer()
     let doubleSwipeDownRecognizer = UISwipeGestureRecognizer()
-    let tripleSwipeDownRecognizer = UISwipeGestureRecognizer()
+    let doubleSwipeRightRecognizer = UISwipeGestureRecognizer()
     var periodJustEntered = false
     
     var timeSpaceLastUsed = Date()
@@ -49,22 +49,22 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
             keyboard.delegate = self
         }
         
-        swipeRightRecognizer.direction = .right
-        swipeRightRecognizer.addTarget(self, action: #selector(self.switchToNextMode))
+        swipeDownRecognizer.direction = .down
+        swipeDownRecognizer.addTarget(self, action: #selector(self.switchToNextMode))
         
         swipeUpRecognizer.direction = .up
         swipeUpRecognizer.addTarget(self, action: #selector(UIInputViewController.advanceToNextInputMode))
         
-        swipeDownRecognizer.direction = .down
-        swipeDownRecognizer.addTarget(self, action: #selector(self.didSwipeDown))
+        swipeRightRecognizer.direction = .right
+        swipeRightRecognizer.addTarget(self, action: #selector(self.didSwipeRight))
+        
+        doubleSwipeRightRecognizer.direction = .right
+        doubleSwipeRightRecognizer.numberOfTouchesRequired = 2
+        doubleSwipeRightRecognizer.addTarget(self, action: #selector(self.handleNewLine))
         
         doubleSwipeDownRecognizer.direction = .down
         doubleSwipeDownRecognizer.numberOfTouchesRequired = 2
-        doubleSwipeDownRecognizer.addTarget(self, action: #selector(self.handleNewLine))
-        
-        tripleSwipeDownRecognizer.direction = .down
-        tripleSwipeDownRecognizer.numberOfTouchesRequired = 3
-        tripleSwipeDownRecognizer.addTarget(self, action: #selector(self.dismissKeyboard))
+        doubleSwipeDownRecognizer.addTarget(self, action: #selector(self.dismissKeyboard))
         
         swipeLeftRecognizer.direction = .left
         swipeLeftRecognizer.addTarget(self, action: #selector(self.didSwipeLeft))
@@ -81,7 +81,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         let calculatedHeight = UIScreen.main.bounds.height * CGFloat(Settings.heightProportion)
         view.addConstraint(NSLayoutConstraint(item:view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: calculatedHeight))
         
-        for gestureRecognizer in [swipeUpRecognizer, swipeDownRecognizer, swipeLeftRecognizer, swipeRightRecognizer, doubleSwipeDownRecognizer, tripleSwipeDownRecognizer] {
+        for gestureRecognizer in [swipeUpRecognizer, swipeDownRecognizer, swipeLeftRecognizer, swipeRightRecognizer, doubleSwipeDownRecognizer, doubleSwipeRightRecognizer] {
             view.addGestureRecognizer(gestureRecognizer)
         }
     }
@@ -102,21 +102,20 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         contrastBar.backgroundColor = .black
         contrastBar.isUserInteractionEnabled = false
         contrastBar.translatesAutoresizingMaskIntoConstraints = false
-
-        let labelOffset = CGFloat(Settings.contrastBarSize / 12)
-        contrastBar.addSubview(suggestedWordLabel)
-        suggestedWordLabel.textColor = .yellow
-        suggestedWordLabel.textAlignment = .center
-        suggestedWordLabel.font = UIFont.systemFont(ofSize: CGFloat(Settings.contrastBarSize))
-        suggestedWordLabel.translatesAutoresizingMaskIntoConstraints = false
-        
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: CGFloat(Settings.contrastBarSize)))
         view.addConstraint(NSLayoutConstraint(item: contrastBar, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0))
 
-        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerX, relatedBy: .equal, toItem: contrastBar, attribute: .centerX, multiplier: 1, constant: labelOffset))
-        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerY, relatedBy: .equal, toItem: contrastBar, attribute: .centerY, multiplier: 1, constant: labelOffset))
+        contrastBar.addSubview(suggestedWordLabel)
+        suggestedWordLabel.textColor = .yellow
+        suggestedWordLabel.textAlignment = .center
+        suggestedWordLabel.font = UIFont.systemFont(ofSize: CGFloat(Settings.contrastBarSize) * 0.8)
+        suggestedWordLabel.translatesAutoresizingMaskIntoConstraints = false
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerX, relatedBy: .equal, toItem: contrastBar, attribute: .centerX, multiplier: 1, constant: 0))
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .centerY, relatedBy: .equal, toItem: contrastBar, attribute: .centerY, multiplier: 1, constant: 0))
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .height, relatedBy: .equal, toItem: contrastBar, attribute: .height, multiplier: 1, constant: 0))
+        contrastBar.addConstraint(NSLayoutConstraint(item: suggestedWordLabel, attribute: .width, relatedBy: .equal, toItem: contrastBar, attribute: .width, multiplier: 1, constant: 0))
         
         if Settings.isAudioEnabled {
             speakImmediate(words: [currentKeyboard.getName()])
@@ -187,7 +186,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         speakImmediate(words: ["backspace"])
     }
     
-    func didSwipeDown() {
+    func didSwipeRight() {
         let spaceDate = Date()
         if spaceDate.timeIntervalSince(timeSpaceLastUsed) < 0.5 && !periodJustEntered {
             handlePeriodSpace()
