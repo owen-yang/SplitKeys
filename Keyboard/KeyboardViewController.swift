@@ -126,6 +126,8 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
     
     override func textDidChange(_ textInput: UITextInput?) {
         currentKeyboard.resetKeys()
+        autocorrectIsOn = false;
+        suggestedWord = "";
     }
     
     func didSelect(char: Character) {

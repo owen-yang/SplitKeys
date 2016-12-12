@@ -44,6 +44,7 @@ class NumeralKeyboard: SingleKeyboard {
     
     func didLongPress(sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
+            timer?.invalidate()
             delegate?.didSelect(char: "0")
             resetKeys()
         }
