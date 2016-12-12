@@ -86,6 +86,11 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        autocorrectLastWord()
+    }
+    
     private func loadKeyboard(_ keyboard: Keyboard) {
         currentKeyboard.removeFromSuperview()
         currentKeyboard = keyboard
@@ -130,6 +135,25 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
         suggestedWord = "";
     }
     
+    func autocorrectLastWord() {
+        let spellChecker = UITextChecker()
+        if let lastWord = textDocumentProxy.documentContextBeforeInput?.components(separatedBy: " ").last {
+            let wordRange = NSRange(0..<(lastWord.utf16.count))
+            let misspelledRange = spellChecker.rangeOfMisspelledWord(in: lastWord, range: wordRange, startingAt: 0, wrap: false, language: "en_US")
+            if misspelledRange.location != NSNotFound {
+                let wordGuesses = spellChecker.guesses(forWordRange: wordRange, in: lastWord, language: "en_US")
+                if wordGuesses?.count != 0 {
+                    suggestedWord = (wordGuesses?[0])!
+                    announceAutoCorrect(phrase: "Did you mean " + suggestedWord + "?")
+                    autocorrectIsOn = true
+                }
+            } else {
+                autocorrectIsOn = false
+                suggestedWord = ""
+            }
+        }
+    }
+    
     func didSelect(char: Character) {
         speakImmediate(words: ["\(char)"])
         characterJustSelected = true
@@ -139,22 +163,7 @@ class KeyboardViewController: UIInputViewController, KeyboardDelegate {
                 textDocumentProxy.insertText("\(char)")
             } else {
                 textDocumentProxy.insertText("\(char)")
-                let spellChecker = UITextChecker()
-                if let lastWord = textDocumentProxy.documentContextBeforeInput?.components(separatedBy: " ").last {
-                    let wordRange = NSRange(0..<(lastWord.utf16.count))
-                    let misspelledRange = spellChecker.rangeOfMisspelledWord(in: lastWord, range: wordRange, startingAt: 0, wrap: false, language: "en_US")
-                    if misspelledRange.location != NSNotFound {
-                        let wordGuesses = spellChecker.guesses(forWordRange: wordRange, in: lastWord, language: "en_US")
-                        if wordGuesses?.count != 0 {
-                            suggestedWord = (wordGuesses?[0])!
-                            announceAutoCorrect(phrase: "Did you mean " + suggestedWord + "?")
-                            autocorrectIsOn = true
-                        }
-                    } else {
-                        autocorrectIsOn = false
-                        suggestedWord = ""
-                    }
-                }
+                autocorrectLastWord()
             }
         } else {
             textDocumentProxy.insertText("\(char)")
